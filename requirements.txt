@@ -7,3 +7,4 @@ python-decouple
 Pillow
 django-unfold
 djangorestframework
+django-cors-headers
