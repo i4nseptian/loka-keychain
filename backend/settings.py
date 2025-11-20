@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-uas^c%rmqdl^vi46vssw7%(z^vnel2af(@rh-5sxs0-2b17$(y')
 
 # ✅ Production-ready: False di production
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # ✅ Railway akan auto-inject domain
 ALLOWED_HOSTS = ['*']
@@ -75,12 +75,26 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # ----------------------------
 # 🗄 DATABASE
 # ----------------------------
+# ✅ PostgreSQL untuk Railway Production
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('PGDATABASE'),
+        'USER': os.environ.get('PGUSER'),
+        'PASSWORD': os.environ.get('PGPASSWORD'),
+        'HOST': os.environ.get('PGHOST'),
+        'PORT': os.environ.get('PGPORT', '5432'),
     }
 }
+
+# ✅ Fallback ke SQLite untuk development lokal
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # ----------------------------
 # 🔐 PASSWORD VALIDATION
@@ -113,7 +127,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # ✅ WhiteNoise: compress & cache static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ----------------------------
 # 🖼️ MEDIA FILES (Upload gambar produk)
@@ -129,6 +143,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:9000",
+    "http://127.0.0.1:9000",
 ]
 
 # ✅ Allow Railway domain (auto-added saat deploy)
@@ -182,7 +198,7 @@ MIDTRANS_CLIENT_KEY = os.environ.get('MIDTRANS_CLIENT_KEY', "Mid-client-B3310bjc
 MIDTRANS_MERCHANT_ID = os.environ.get('MIDTRANS_MERCHANT_ID', "G655962966")
 
 # ============================================
-# 🔐 CSRF SETTINGS - Railway Production
+# 🔒 CSRF SETTINGS - Railway Production
 # ============================================
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
@@ -193,7 +209,8 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:9000',
     'http://127.0.0.1:8000',
     'http://localhost:8000',
-    # Railway domain akan ditambahkan nanti: 'https://loka-keychain-production.up.railway.app'
+    # ⚠️ PENTING: Setelah deploy, tambahkan domain Railway:
+    # 'https://loka-keychain-production.up.railway.app'
 ]
 
 # Session settings
@@ -209,3 +226,8 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = 'DENY'
     SECURE_CONTENT_TYPE_NOSNIFF = True
+    
+    # ⚠️ Uncomment setelah deploy Railway berhasil:
+    # SECURE_SSL_REDIRECT = True
+    # SESSION_COOKIE_SECURE = True
+    # CSRF_COOKIE_SECURE = True
