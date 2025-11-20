@@ -138,8 +138,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "http://localhost:9000",
-    "http://127.0.0.1:9000",
+    "https://your-frontend-domain.com",  # ✅ URL frontend Anda
 ]
 
 # ✅ Set True untuk allow semua origin (atau tambahkan domain spesifik nanti)
@@ -204,8 +203,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:9000',
     'http://127.0.0.1:8000',
     'http://localhost:8000',
-    # ⚠️ PENTING: Setelah deploy, tambahkan:
-    # 'https://loka-keychain.onrender.com'
+    'https://loka-keychain.onrender.com',  # ✅ Tambahkan ini
 ]
 
 # Session settings
