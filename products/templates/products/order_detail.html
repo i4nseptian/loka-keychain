@@ -1,0 +1,538 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Detail - LOKA.CO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    .top-bar {
+      height: 8px;
+      background: linear-gradient(90deg, #1c1c75 0%, #2563eb 100%);
+    }
+
+    /* Navbar */
+    .navbar {
+      background: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1c1c75;
+      text-decoration: none;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: #1c1c75;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .back-btn:hover {
+      transform: translateX(-5px);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #1c1c75;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+      color: #666;
+      font-size: 1rem;
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 2rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #f0f2f5;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1c1c75;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .status-badge {
+      padding: 0.6rem 1.5rem;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-paid {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-cancelled {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    /* Info Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .info-label {
+      color: #666;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .info-value {
+      color: #333;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    /* Order Items Table */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .items-table thead {
+      background: #f8f9fa;
+    }
+
+    .items-table th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 700;
+      color: #1c1c75;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .items-table td {
+      padding: 1.25rem 1rem;
+      border-bottom: 1px solid #f0f2f5;
+    }
+
+    .items-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .product-name {
+      font-weight: 600;
+      color: #333;
+    }
+
+    /* Summary */
+    .order-summary {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-top: 2rem;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .summary-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .summary-total {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1c1c75;
+      padding-top: 1rem;
+      border-top: 2px solid #e0e0e0;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 3rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #e0e0e0;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.65rem;
+      top: 5px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid #1c1c75;
+    }
+
+    .timeline-item.completed::before {
+      background: #10b981;
+      border-color: #10b981;
+    }
+
+    .timeline-date {
+      color: #666;
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-title {
+      font-weight: 700;
+      color: #1c1c75;
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-desc {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #1c1c75 0%, #2563eb 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(28,28,117,0.3);
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: white;
+      color: #1c1c75;
+      border: 2px solid #1c1c75;
+    }
+
+    .btn-outline:hover {
+      background: #1c1c75;
+      color: white;
+    }
+
+    /* Footer */
+    footer {
+      background: #1c1c75;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 4rem;
+    }
+
+    @media (max-width: 768px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .items-table {
+        font-size: 0.9rem;
+      }
+
+      .items-table th,
+      .items-table td {
+        padding: 0.75rem 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="{% url 'products:index' %}" class="logo">LOKA.CO</a>
+    <a href="{% url 'products:dashboard' %}" class="back-btn">
+      ← Back to Dashboard
+    </a>
+  </nav>
+
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">Order Details</h1>
+      <p class="page-subtitle">Order #{{ order.order_id }}</p>
+    </div>
+
+    <!-- Order Status Card -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">📦 Order Status</h2>
+        <span class="status-badge status-{{ order.status }}">
+          {% if order.status == 'pending' %}⏳ Pending Payment
+          {% elif order.status == 'paid' %}💳 Payment Confirmed
+          {% elif order.status == 'completed' %}✅ Order Completed
+          {% elif order.status == 'cancelled' %}❌ Order Cancelled
+          {% endif %}
+        </span>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Order ID</span>
+          <span class="info-value">#{{ order.order_id }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Order Date</span>
+          <span class="info-value">{{ order.created_at|date:"d M Y, H:i" }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Customer Name</span>
+          <span class="info-value">{{ order.user_name }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Email</span>
+          <span class="info-value">{{ order.user_email }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Items Card -->
+    <div class="card">
+      <h2 class="card-title">🛍️ Order Items</h2>
+
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order_items %}
+          <tr>
+            <td class="product-name">{{ item.product_name }}</td>
+            <td>Rp {{ item.price|floatformat:0 }}</td>
+            <td>{{ item.quantity }}</td>
+            <td><strong>Rp {{ item.subtotal|floatformat:0 }}</strong></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="order-summary">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>Rp {{ order.total_amount|floatformat:0 }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping:</span>
+          <span>Rp 15.000</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax (11%):</span>
+          <span>Rp 23.650</span>
+        </div>
+        <div class="summary-row summary-total">
+          <span>Total:</span>
+          <span>Rp {{ order.total_amount|floatformat:0 }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Timeline Card -->
+    <div class="card">
+      <h2 class="card-title">📋 Order Timeline</h2>
+
+      <div class="timeline">
+        <div class="timeline-item completed">
+          <div class="timeline-date">{{ order.created_at|date:"d M Y, H:i" }}</div>
+          <div class="timeline-title">Order Placed</div>
+          <div class="timeline-desc">Your order has been received and is being processed</div>
+        </div>
+
+        {% if order.status == 'paid' or order.status == 'completed' %}
+        <div class="timeline-item completed">
+          <div class="timeline-date">{{ order.updated_at|date:"d M Y, H:i" }}</div>
+          <div class="timeline-title">Payment Confirmed</div>
+          <div class="timeline-desc">We have received your payment</div>
+        </div>
+        {% endif %}
+
+        {% if order.status == 'completed' %}
+        <div class="timeline-item completed">
+          <div class="timeline-date">{{ order.updated_at|date:"d M Y, H:i" }}</div>
+          <div class="timeline-title">Order Completed</div>
+          <div class="timeline-desc">Your order has been delivered successfully</div>
+        </div>
+        {% endif %}
+
+        {% if order.status == 'cancelled' %}
+        <div class="timeline-item">
+          <div class="timeline-date">{{ order.updated_at|date:"d M Y, H:i" }}</div>
+          <div class="timeline-title">Order Cancelled</div>
+          <div class="timeline-desc">This order has been cancelled</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <a href="{% url 'products:dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+      
+      {% if order.status == 'pending' or order.status == 'paid' %}
+      <button onclick="cancelOrder('{{ order.order_id }}')" class="btn btn-danger">Cancel Order</button>
+      {% endif %}
+
+      {% if order.status == 'completed' %}
+      <button class="btn btn-outline">Reorder</button>
+      <button class="btn btn-outline">Download Invoice</button>
+      {% endif %}
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 LOKA.CO — All Rights Reserved</p>
+  </footer>
+
+  <script>
+    function cancelOrder(orderId) {
+      if (!confirm('Are you sure you want to cancel this order?')) {
+        return;
+      }
+
+      fetch(`/cancel-order/${orderId}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Order cancelled successfully!');
+          window.location.href = '{% url "products:dashboard" %}';
+        } else {
+          alert('Failed to cancel order: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while cancelling the order.');
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - LOKA.CO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    .top-bar {
+      height: 8px;
+      background: linear-gradient(90deg, #1c1c75 0%, #2563eb 100%);
+    }
+
+    /* Navbar */
+    .navbar {
+      background: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1c1c75;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #1c1c75;
+    }
+
+    .nav-icons {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      font-size: 1.2rem;
+    }
+
+    .nav-icons a {
+      text-decoration: none;
+      color: #333;
+      transition: transform 0.2s;
+      position: relative;
+    }
+
+    .nav-icons a:hover {
+      transform: scale(1.1);
+    }
+
+    .badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #ef4444;
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    /* Main Container */
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 2rem;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      height: fit-content;
+      position: sticky;
+      top: 90px;
+      overflow: hidden;
+    }
+
+    /* Profile Header */
+    .profile-header {
+      background: linear-gradient(135deg, #1c1c75 0%, #2563eb 100%);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="2" fill="white" opacity="0.1"/></svg>');
+      opacity: 0.3;
+    }
+
+    .profile-avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      margin: 0 auto 1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
+      border: 4px solid rgba(255,255,255,0.3);
+    }
+
+    .profile-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-email {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.25);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-top: 1rem;
+      position: relative;
+      z-index: 1;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Sidebar Menu */
+    .sidebar-menu {
+      padding: 1.5rem 0;
+    }
+
+    .menu-section {
+      padding: 0 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .menu-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      padding: 0 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1rem;
+      color: #555;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .menu-item:hover {
+      background: #f0f2f5;
+      color: #1c1c75;
+      transform: translateX(5px);
+    }
+
+    .menu-item.active {
+      background: linear-gradient(135deg, rgba(28,28,117,0.15) 0%, rgba(37,99,235,0.15) 100%);
+      color: #1c1c75;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(28,28,117,0.1);
+    }
+
+    .menu-icon {
+      font-size: 1.3rem;
+      width: 28px;
+      text-align: center;
+    }
+
+    .logout-btn {
+      margin: 0 1rem 1.5rem;
+      width: calc(100% - 2rem);
+      padding: 1rem;
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px rgba(239,68,68,0.3);
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239,68,68,0.4);
+    }
+
+    /* Main Content */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Welcome Banner */
+    .welcome-banner {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 3rem;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-banner::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      top: -200px;
+      right: -200px;
+    }
+
+    .welcome-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcome-banner h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.75rem;
+      font-weight: 800;
+    }
+
+    .welcome-banner p {
+      opacity: 0.95;
+      font-size: 1.1rem;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: linear-gradient(135deg, #1c1c75 0%, #2563eb 100%);
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-icon {
+      font-size: 2.5rem;
+      opacity: 0.8;
+    }
+
+    .stat-label {
+      color: #666;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #1c1c75;
+      margin-bottom: 0.75rem;
+    }
+
+    .stat-change {
+      font-size: 0.9rem;
+      color: #10b981;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    /* Card */
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid #f0f2f5;
+    }
+
+    .card-header h2 {
+      color: #1c1c75;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+    }
+
+    .view-all {
+      color: #1c1c75;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .view-all:hover {
+      opacity: 0.7;
+    }
+
+    /* Order Item */
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.75rem;
+      background: #f8f9fa;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      transition: all 0.3s;
+      cursor: pointer;
+      border-left: 5px solid transparent;
+    }
+
+    .order-item:hover {
+      background: #e9ecef;
+      border-left-color: #1c1c75;
+      transform: translateX(8px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .order-info {
+      flex: 1;
+    }
+
+    .order-number {
+      font-weight: 700;
+      color: #1c1c75;
+      margin-bottom: 0.75rem;
+      font-size: 1.05rem;
+    }
+
+    .order-details {
+      color: #666;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .order-details span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .order-status {
+      padding: 0.6rem 1.25rem;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .status-processing {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .action-card {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .action-card:hover {
+      border-color: #1c1c75;
+      background: linear-gradient(135deg, rgba(28,28,117,0.05) 0%, rgba(37,99,235,0.05) 100%);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .action-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .action-label {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #1c1c75;
+    }
+
+    /* Profile Info Grid */
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .info-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .info-card h3 {
+      color: #1c1c75;
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 0;
+      border-bottom: 1px solid #f0f2f5;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      color: #666;
+      font-weight: 500;
+    }
+
+    .info-value {
+      color: #333;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .edit-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: #1c1c75;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    .edit-btn:hover {
+      background: #15155a;
+      transform: translateY(-2px);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .empty-icon {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      color: #1c1c75;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    .primary-btn {
+      display: inline-block;
+      padding: 1rem 2rem;
+      background: #1c1c75;
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .primary-btn:hover {
+      background: #15155a;
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    footer {
+      background: #1c1c75;
+      color: white;
+      text-align: center;
+      padding: 2.5rem;
+      margin-top: 5rem;
+    }
+
+    /* Hidden */
+    .hidden {
+      display: none !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .dashboard-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .sidebar {
+        position: relative;
+        top: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .welcome-banner h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="{% url 'products:index' %}" class="logo">LOKA.CO</a>
+    <div class="nav-links">
+      <a href="{% url 'products:index' %}">Home</a>
+      <a href="{% url 'products:index' %}#new-arrivals">Shop</a>
+      <a href="{% url 'products:index' %}#new-arrivals">New Arrivals</a>
+      <a href="{% url 'products:index' %}#top-selling">On Sale</a>
+    </div>
+    <div class="nav-icons">
+      <a href="{% url 'products:dashboard' %}" title="Profile">🧍</a>
+      <a href="{% url 'products:cart' %}" title="Cart">
+        🛒
+        <span class="badge">3</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="dashboard-container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="profile-header">
+        <div class="profile-avatar">👤</div>
+        <div class="profile-name">Ian</div>
+        <div class="profile-email">ian@example.com</div>
+        <span class="profile-badge">⭐ VIP Member</span>
+      </div>
+
+      <div class="sidebar-menu">
+        
+        <div class="menu-section">
+          <div class="menu-label">Main Menu</div>
+          <button class="menu-item active" onclick="showSection('overview')" id="menu-overview">
+            <span class="menu-icon">📊</span>
+            <span>Overview</span>
+          </button>
+          <button class="menu-item" onclick="showSection('orders')" id="menu-orders">
+            <span class="menu-icon">📦</span>
+            <span>Pesanan Saya</span>
+          </button>
+          <a href="{% url 'products:cart' %}" class="menu-item">
+            <span class="menu-icon">🛒</span>
+            <span>Keranjang</span>
+          </a>
+        </div>
+
+        <div class="menu-section">
+          <div class="menu-label">Account</div>
+          <button class="menu-item" onclick="showSection('profile')" id="menu-profile">
+            <span class="menu-icon">👤</span>
+            <span>Profil Saya</span>
+          </button>
+          <button class="menu-item" onclick="showSection('wishlist')" id="menu-wishlist">
+            <span class="menu-icon">❤️</span>
+            <span>Wishlist</span>
+          </button>
+          <button class="menu-item" onclick="showSection('settings')" id="menu-settings">
+            <span class="menu-icon">⚙️</span>
+            <span>Pengaturan</span>
+          </button>
+        </div>
+
+        <div class="menu-section">
+          <div class="menu-label">Support</div>
+          <button class="menu-item" onclick="showSection('help')" id="menu-help">
+            <span class="menu-icon">💬</span>
+            <span>Help Center</span>
+          </button>
+        </div>
+
+      </div>
+
+      <button class="logout-btn" onclick="handleLogout()">
+        <span>🚪</span>
+        <span>Logout</span>
+      </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <!-- OVERVIEW SECTION -->
+      <div id="section-overview">
+        <div class="welcome-banner">
+          <div class="welcome-content">
+            <h1>Selamat Datang Kembali, Ian! 👋</h1>
+            <p>Senang melihat Anda kembali. Yuk cek pesanan dan belanja lagi!</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <div>
+                <div class="stat-label">Total Orders</div>
+                <div class="stat-value">8</div>
+                <div class="stat-change">↗ +2 bulan ini</div>
+              </div>
+              <div class="stat-icon">📦</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <div>
+                <div class="stat-label">Total Spending</div>
+                <div class="stat-value">Rp 1.2M</div>
+                <div class="stat-change">↗ +15%</div>
+              </div>
+              <div class="stat-icon">💰</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <div>
+                <div class="stat-label">Wishlist</div>
+                <div class="stat-value">12</div>
+                <div class="stat-change">❤️ 5 baru</div>
+              </div>
+              <div class="stat-icon">⭐</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <div>
+                <div class="stat-label">Points</div>
+                <div class="stat-value">2,450</div>
+                <div class="stat-change">🎁 Tukar</div>
+              </div>
+              <div class="stat-icon">🏆</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>⚡ Quick Actions</h2>
+          </div>
+          <div class="quick-actions">
+            <a href="{% url 'products:cart' %}" class="action-card">
+              <div class="action-icon">🛒</div>
+              <div class="action-label">View Cart</div>
+            </a>
+            <a href="{% url 'products:index' %}" class="action-card">
+              <div class="action-icon">🛍️</div>
+              <div class="action-label">Shop Now</div>
+            </a>
+            <a href="#" class="action-card" onclick="alert('Track Order feature coming soon!')">
+              <div class="action-icon">📍</div>
+              <div class="action-label">Track Order</div>
+            </a>
+            <a href="#" class="action-card" onclick="showSection('help')">
+              <div class="action-icon">💬</div>
+              <div class="action-label">Support</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="card">
+  <div class="card-header">
+    <h2>📦 Recent Orders</h2>
+    <a href="#" class="view-all" onclick="showSection('orders'); return false;">View All →</a>
+  </div>
+
+  {% if orders %}
+    {% for order in orders|slice:":3" %}  {# Tampilkan 3 order terbaru #}
+      <div class="order-item">
+        <div class="order-info">
+          <div class="order-number">Order #{{ order.order_id }}</div>
+          <div class="order-details">
+            <span>💰 Rp {{ order.total_amount|floatformat:0 }}</span>
+            <span>📅 {{ order.created_at|date:"d M Y" }}</span>
+          </div>
+        </div>
+        {% if order.status == "paid" %}
+          <span class="order-status status-completed">✅ Selesai</span>
+        {% else %}
+          <span class="order-status status-processing">⏳ Diproses</span>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h3>Belum Ada Pesanan</h3>
+      <p>Pesanan kamu akan muncul di sini setelah checkout.</p>
+      <a href="{% url 'products:index' %}" class="primary-btn">🛍️ Belanja Sekarang</a>
+    </div>
+  {% endif %}
+</div>
+
+
+      <!-- ORDERS SECTION -->
+      <div id="section-orders" class="hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2>📦 All Orders</h2>
+          </div>
+          
+          <div class="order-item" onclick="alert('Viewing order details...')">
+            <div class="order-info">
+              <div class="order-number">Order #LOKA20251030001</div>
+              <div class="order-details">
+                <span>📦 3 items</span>
+                <span>💰 Rp 230.000</span>
+                <span>📅 30 Okt 2025</span>
+              </div>
+            </div>
+            <span class="order-status status-processing">⏳ Diproses</span>
+          </div>
+
+          <div class="order-item" onclick="alert('Viewing order details...')">
+            <div class="order-info">
+              <div class="order-number">Order #LOKA20251025002</div>
+              <div class="order-details">
+                <span>📦 2 items</span>
+                <span>💰 Rp 120.000</span>
+                <span>📅 25 Okt 2025</span>
+              </div>
+            </div>
+            <span class="order-status status-completed">✅ Selesai</span>
+          </div>
+
+          <div class="order-item" onclick="alert('Viewing order details...')">
+            <div class="order-info">
+              <div class="order-number">Order #LOKA20251020003</div>
+              <div class="order-details">
+                <span>📦 5 items</span>
+                <span>💰 Rp 300.000</span>
+                <span>📅 20 Okt 2025</span>
+              </div>
+            </div>
+            <span class="order-status status-completed">✅ Selesai</span>
+          </div>
+
+          <div class="order-item" onclick="alert('Viewing order details...')">
+            <div class="order-info">
+              <div class="order-number">Order #LOKA20251015004</div>
+              <div class="order-details">
+                <span>📦 1 item</span>
+                <span>💰 Rp 50.000</span>
+                <span>📅 15 Okt 2025</span>
+              </div>
+            </div>
+            <span class="order-status status-completed">✅ Selesai</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE SECTION -->
+      <div id="section-profile" class="hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2>👤 My Profile</h2>
+          </div>
+          
+          <div class="profile-grid">
+            <div class="info-card">
+              <h3>📋 Personal Information</h3>
+              <div class="info-row">
+                <span class="info-label">Full Name</span>
+                <span class="info-value">Ian</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Email</span>
+                <span class="info-value">ian@example.com</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Phone</span>
+                <span class="info-value">+62 812 3456 7890</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Birth Date</span>
+                <span class="info-value">15 Jan 1998</span>
+              </div>
+              <button class="edit-btn" onclick="alert('Edit Profile form akan ditambahkan')">✏️ Edit Profile</button>
+            </div>
+
+            <div class="info-card">
+              <h3>📍 Shipping Address</h3>
+              <div class="info-row">
+                <span class="info-label">Address</span>
+                <span class="info-value">Jl. Contoh No. 123</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">City</span>
+                <span class="info-value">Makassar</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Province</span>
+                <span class="info-value">Sulawesi Selatan</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Postal Code</span>
+                <span class="info-value">90111</span>
+              </div>
+              <button class="edit-btn" onclick="alert('Edit Address form akan ditambahkan')">📍 Edit Address</button>
+            </div>
+
+            <div class="info-card">
+              <h3>💳 Payment Methods</h3>
+              <div class="info-row">
+                <span class="info-label">Credit Card</span>
+                <span class="info-value">•••• 4242</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">E-Wallet</span>
+                <span class="info-value">GoPay</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Bank Account</span>
+                <span class="info-value">BCA - •••• 5678</span>
+              </div>
+              <button class="edit-btn" onclick="alert('Add Payment Method akan ditambahkan')">➕ Add Payment Method</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WISHLIST SECTION -->
+      <div id="section-wishlist" class="hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2>❤️ My Wishlist</h2>
+          </div>
+          
+          <div class="empty-state">
+            <div class="empty-icon">💝</div>
+            <h3>Your Wishlist is Empty</h3>
+            <p>Start adding items you love to your wishlist!</p>
+            <a href="{% url 'products:index' %}" class="primary-btn">🛍️ Start Shopping</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS SECTION -->
+      <div id="section-settings" class="hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2>⚙️ Account Settings</h2>
+          </div>
+          
+          <div class="profile-grid">
+            <div class="info-card">
+              <h3>🔔 Notifications</h3>
+              <div class="info-row">
+                <span class="info-label">Email Notifications</span>
+                <span class="info-value" style="color: #10b981;">✓ Enabled</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">SMS Notifications</span>
+                <span class="info-value" style="color: #10b981;">✓ Enabled</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Push Notifications</span>
+                <span class="info-value" style="color: #ef4444;">✗ Disabled</span>
+              </div>
+              <button class="edit-btn" onclick="alert('Notification settings akan ditambahkan')">🔔 Manage Notifications</button>
+            </div>
+
+            <div class="info-card">
+              <h3>🔒 Security</h3>
+              <div class="info-row">
+                <span class="info-label">Password</span>
+                <span class="info-value">••••••••</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Two-Factor Auth</span>
+                <span class="info-value" style="color: #ef4444;">✗ Disabled</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Last Login</span>
+                <span class="info-value">Today, 14:30</span>
+              </div>
+              <button class="edit-btn" onclick="alert('Security settings akan ditambahkan')">🔒 Change Password</button>
+            </div>
+
+            <div class="info-card">
+              <h3>🌐 Preferences</h3>
+              <div class="info-row">
+                <span class="info-label">Language</span>
+                <span class="info-value">Bahasa Indonesia</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Currency</span>
+                <span class="info-value">IDR (Rp)</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Theme</span>
+                <span class="info-value">Light Mode</span>
+              </div>
+              <button class="edit-btn" onclick="alert('Preferences akan ditambahkan')">🌐 Update Preferences</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HELP CENTER SECTION -->
+      <div id="section-help" class="hidden">
+        <div class="card">
+          <div class="card-header">
+            <h2>💬 Help Center</h2>
+          </div>
+          
+          <div class="profile-grid">
+            <div class="info-card">
+              <h3>📞 Contact Us</h3>
+              <div class="info-row">
+                <span class="info-label">Phone</span>
+                <span class="info-value">0821-1234-5678</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Email</span>
+                <span class="info-value">support@loka.co</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">WhatsApp</span>
+                <span class="info-value">+62 821-1234-5678</span>
+              </div>
+              <button class="edit-btn" onclick="alert('Chat support akan dibuka')">💬 Live Chat</button>
+            </div>
+
+            <div class="info-card">
+              <h3>📚 Quick Help</h3>
+              <div class="info-row">
+                <span class="info-label">Shipping Info</span>
+                <span class="info-value" style="color: #1c1c75; cursor: pointer;" onclick="alert('Shipping info akan ditampilkan')">View →</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Return Policy</span>
+                <span class="info-value" style="color: #1c1c75; cursor: pointer;" onclick="alert('Return policy akan ditampilkan')">View →</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">FAQ</span>
+                <span class="info-value" style="color: #1c1c75; cursor: pointer;" onclick="alert('FAQ akan ditampilkan')">View →</span>
+              </div>
+              <button class="edit-btn" onclick="alert('Help articles akan ditampilkan')">📖 Browse Articles</button>
+            </div>
+
+            <div class="info-card">
+              <h3>🎫 Submit Ticket</h3>
+              <p style="color: #666; margin-bottom: 1.5rem; line-height: 1.6;">
+                Have a specific issue? Submit a support ticket and our team will get back to you within 24 hours.
+              </p>
+              <button class="edit-btn" onclick="alert('Ticket form akan ditampilkan')">🎫 Create Ticket</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <footer>
+    <p>© 2025 LOKA.CO — All Rights Reserved</p>
+  </footer>
+
+  <script>
+    function showSection(section) {
+      // Hide all sections
+      document.querySelectorAll('[id^="section-"]').forEach(el => {
+        el.classList.add('hidden');
+      });
+      
+      // Remove active from all menu items
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // Show selected section
+      document.getElementById('section-' + section).classList.remove('hidden');
+      
+      // Add active to clicked menu item
+      const menuItem = document.getElementById('menu-' + section);
+      if (menuItem) {
+        menuItem.classList.add('active');
+      }
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function handleLogout() {
+      if (confirm('Apakah Anda yakin ingin keluar?')) {
+        alert('👋 Logout berhasil! Terima kasih telah berbelanja di LOKA.CO');
+        window.location.href = "{% url 'products:login' %}";
+      }
+    }
+  </script>
+
+</body>
+</html>

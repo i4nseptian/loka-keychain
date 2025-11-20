@@ -1,0 +1,524 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing Payment - LOKA.CO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Anda yang bagus di sini (tanpa perubahan besar) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        body::before,
+        body::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        body::before {
+            width: 400px;
+            height: 400px;
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        body::after {
+            width: 300px;
+            height: 300px;
+            bottom: -150px;
+            right: -150px;
+            animation-delay: 5s;
+            animation-direction: reverse;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(50px, 50px) scale(1.1);
+            }
+        }
+
+        /* Container */
+        .processing-container {
+            position: relative;
+            z-index: 10;
+            background: white;
+            border-radius: 24px;
+            padding: 4rem 3rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loader Animation */
+        .loader-container {
+            margin-bottom: 2rem;
+        }
+
+        .loader {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .loader-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 8px solid #f0f2f5;
+            border-top-color: #1c1c75;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        /* Title & Message */
+        h1 {
+            color: #1c1c75;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .processing-message {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 16px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 12px;
+            transition: all 0.5s ease;
+        }
+
+        .step-item.active {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-item.completed {
+            opacity: 0.6;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background: #e0e0e0;
+            color: #999;
+            transition: all 0.5s ease;
+        }
+
+        .step-item.active .step-icon {
+            background: linear-gradient(135deg, #1c1c75 0%, #2563eb 100%);
+            color: white;
+            animation: bounce 1s infinite;
+        }
+
+        .step-item.completed .step-icon {
+            background: #10b981;
+            color: white;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .step-text {
+            flex: 1;
+            text-align: left;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .step-description {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .step-item.active .step-title {
+            color: #1c1c75;
+        }
+
+        /* Progress Bar */
+        .progress-bar-container {
+            margin: 2rem 0;
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #1c1c75 0%, #2563eb 100%);
+            width: 0%;
+            animation: progress 8s ease forwards;
+            border-radius: 10px;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            25% { width: 33%; }
+            50% { width: 66%; }
+            100% { width: 100%; }
+        }
+
+        /* Warning Message */
+        .warning-box {
+            background: #fffbeb;
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-align: left;
+        }
+
+        .warning-icon {
+            font-size: 1.5rem;
+        }
+
+        .warning-text {
+            font-size: 0.9rem;
+            color: #92400e;
+        }
+        
+        /* Modal for Back Button Warning */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none; /* Default hidden */
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+        .modal-content h3 {
+            color: #ef4444; /* Red 500 */
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        .modal-content button {
+            background: #1c1c75;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* Dots Animation */
+        .dots {
+            display: inline-block;
+        }
+
+        .dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        /* Timer */
+        .timer {
+            font-size: 0.9rem;
+            color: #999;
+            margin-top: 1rem;
+        }
+
+        .timer-count {
+            font-weight: 700;
+            color: #1c1c75;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="processing-container">
+        
+        <!-- Loader -->
+        <div class="loader-container">
+            <div class="loader">
+                <div class="loader-circle"></div>
+                <div class="loader-icon">💳</div>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <h1>Processing Payment<span class="dots"></span></h1>
+        <p class="processing-message">
+            Please wait while we process your payment securely. This may take a few moments.
+        </p>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar-container">
+            <div class="progress-bar"></div>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="progress-steps">
+            <!-- Steps tetap sama -->
+            <div class="step-item completed" id="step-1">
+                <div class="step-icon">✓</div>
+                <div class="step-text">
+                    <div class="step-title">Verifying Payment</div>
+                    <div class="step-description">Checking payment details</div>
+                </div>
+            </div>
+
+            <div class="step-item active" id="step-2">
+                <div class="step-icon">⏳</div>
+                <div class="step-text">
+                    <div class="step-title">Processing Transaction</div>
+                    <div class="step-description">Connecting to payment gateway</div>
+                </div>
+            </div>
+
+            <div class="step-item" id="step-3">
+                <div class="step-icon">📦</div>
+                <div class="step-text">
+                    <div class="step-title">Creating Order</div>
+                    <div class="step-description">Setting up your order</div>
+                </div>
+            </div>
+
+            <div class="step-item" id="step-4">
+                <div class="step-icon">✉️</div>
+                <div class="step-text">
+                    <div class="step-title">Sending Confirmation</div>
+                    <div class="step-description">Email confirmation on the way</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Warning -->
+        <div class="warning-box">
+            <div class="warning-icon">⚠️</div>
+            <div class="warning-text">
+                <strong>Please do not close this page</strong> or press the back button during the payment process.
+            </div>
+        </div>
+
+        <!-- Timer -->
+        <div class="timer">
+            Estimated time: <span class="timer-count" id="timer">8</span> seconds
+        </div>
+
+    </div>
+
+    <!-- MODAL BARU UNTUK WARNING BACK BUTTON -->
+    <div class="modal-overlay" id="backButtonModal">
+        <div class="modal-content">
+            <h3>⚠️ PERINGATAN KRITIS</h3>
+            <p>Memencet tombol kembali dapat menyebabkan pembayaran Anda gagal atau macet.</p>
+            <p class="text-sm mt-3 text-gray-500">Silakan tunggu proses ini selesai.</p>
+            <button onclick="closeModal()">Tutup dan Lanjutkan Menunggu</button>
+        </div>
+    </div>
+
+    <script>
+        const totalDuration = 8000; // Total durasi (8 detik)
+        const timerElement = document.getElementById('timer');
+        const modal = document.getElementById('backButtonModal');
+
+        // --- TIMER COUNTDOWN ---
+        let timeLeft = 8;
+        const timerInterval = setInterval(() => {
+            timeLeft--;
+            if (timeLeft >= 0) {
+                timerElement.textContent = timeLeft;
+            } else {
+                clearInterval(timerInterval);
+            }
+        }, 1000);
+
+
+        // --- PROGRESS STEPS ANIMATION ---
+        const steps = [
+            { id: 'step-1', delay: 0 },
+            { id: 'step-2', delay: 2000 },
+            { id: 'step-3', delay: 4000 },
+            { id: 'step-4', delay: 6000 }
+        ];
+
+        steps.forEach((step, index) => {
+            setTimeout(() => {
+                // Mark previous as completed
+                if (index > 0) {
+                    const prevStep = document.getElementById(steps[index - 1].id);
+                    prevStep.classList.remove('active');
+                    prevStep.classList.add('completed');
+                    prevStep.querySelector('.step-icon').innerHTML = '✓'; // Ganti content
+                }
+
+                // Mark current as active
+                const currentStep = document.getElementById(step.id);
+                // Hanya aktifkan step jika bukan step terakhir (step 4 akan diaktifkan oleh redirect timeout)
+                if (index < steps.length) {
+                    currentStep.classList.add('active');
+                }
+            }, step.delay);
+        });
+
+
+        // --- FINAL REDIRECT ---
+        setTimeout(() => {
+            // Stop timer
+            clearInterval(timerInterval);
+            timerElement.textContent = 0;
+
+            // Complete the last step (step-4)
+            const lastStep = document.getElementById('step-4');
+            lastStep.classList.remove('active');
+            lastStep.classList.add('completed');
+            lastStep.querySelector('.step-icon').innerHTML = '✓';
+
+            // Show success animation before redirect
+            const container = document.querySelector('.processing-container');
+            container.style.animation = 'slideUp 0.5s ease reverse';
+
+            setTimeout(() => {
+                // Redirect to success page
+                window.location.href = "{% url 'products:success' %}";
+            }, 500); // Wait for the exit animation
+        }, totalDuration);
+
+
+        // --- MODAL & BACK BUTTON PREVENTION ---
+        // Fungsi untuk menampilkan modal (menggantikan alert)
+        function showModal() {
+            modal.style.display = 'flex';
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // Taktik mencegah back button (mendorong state baru)
+        window.history.pushState(null, "", window.location.href);
+        window.onpopstate = function() {
+            window.history.pushState(null, "", window.location.href);
+            // Tampilkan modal custom, bukan alert
+            showModal();
+        };
+
+        // Mencegah close/refresh
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            e.returnValue = '';
+            return 'Payment is being processed. Are you sure you want to leave?';
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment - LOKA.CO</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- ✅ Midtrans PRODUCTION Script -->
+  <script 
+    type="text/javascript"
+    src="https://app.midtrans.com/snap/snap.js"
+    data-client-key="{{ client_key }}">
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .container {
+      background: white;
+      border-radius: 24px;
+      padding: 3rem;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.5s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .header { text-align: center; margin-bottom: 2rem; }
+    .header h1 { color: #1c1c75; font-size: 2rem; margin-bottom: 0.5rem; }
+    .header p { color: #666; }
+
+    .order-summary {
+      background: #f8f9fa;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+    .summary-total span:last-child { color: #1c1c75; font-weight: 700; }
+
+    .pay-btn {
+      width: 100%;
+      padding: 1.2rem;
+      background: linear-gradient(135deg, #1c1c75 0%, #2563eb 100%);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 4px 15px rgba(28,28,117,0.3);
+    }
+    .pay-btn:hover { transform: translateY(-3px); }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>Payment</h1>
+    <p>Complete your payment securely via Midtrans</p>
+  </div>
+
+  <!-- ✅ ORDER SUMMARY -->
+  <div class="order-summary">
+    <div class="summary-row">
+      <span>Total Pembayaran</span>
+      <span>Rp {{ order_total|floatformat:0 }}</span>
+    </div>
+  </div>
+
+  <!-- ✅ BUTTON -->
+  <button class="pay-btn" id="pay-button">
+    Bayar Sekarang
+  </button>
+</div>
+
+<!-- ✅ MIDTRANS PAYMENT FUNCTION -->
+<script>
+  document.getElementById('pay-button').addEventListener('click', function() {
+    snap.pay("{{ snap_token }}", {
+      onSuccess: function(result) {
+        console.log(result);
+        window.location.href = "/success/";
+      },
+      onPending: function(result) {
+        console.log(result);
+        window.location.href = "/processing/";
+      },
+      onError: function(result) {
+        console.error(result);
+        alert("⚠️ Pembayaran gagal. Silakan coba lagi.");
+      },
+      onClose: function() {
+        alert("Kamu menutup pop-up pembayaran sebelum selesai.");
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

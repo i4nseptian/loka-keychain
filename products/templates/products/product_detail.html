@@ -1,0 +1,526 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ product.name }} - LOKA.CO</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .product-detail-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .product-images {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .main-image {
+      width: 100%;
+      height: 500px;
+      object-fit: contain;
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 2rem;
+    }
+
+    .thumbnail-images {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .thumbnail {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      background: #f8f9fa;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.3s;
+      padding: 0.5rem;
+    }
+
+    .thumbnail:hover,
+    .thumbnail.active {
+      border-color: #1c1c75;
+    }
+
+    .product-info h1 {
+      font-size: 2rem;
+      color: #1c1c75;
+      margin-bottom: 1rem;
+    }
+
+    .rating-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stars {
+      color: #fbbf24;
+      font-size: 1.2rem;
+    }
+
+    .review-count {
+      color: #666;
+    }
+
+    .price {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1c1c75;
+      margin-bottom: 1.5rem;
+    }
+
+    .description {
+      color: #666;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .quantity-btn {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #e0e0e0;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+    }
+
+    .quantity-btn:hover {
+      border-color: #1c1c75;
+      background: #f8f9fa;
+    }
+
+    .quantity-input {
+      width: 60px;
+      height: 40px;
+      text-align: center;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .btn-add-cart {
+      flex: 2;
+      padding: 1rem;
+      background: #1c1c75;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-add-cart:hover {
+      background: #15155a;
+      transform: translateY(-2px);
+    }
+
+    .btn-buy-now {
+      flex: 1;
+      padding: 1rem;
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-buy-now:hover {
+      background: #059669;
+      transform: translateY(-2px);
+    }
+
+    .product-features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      padding: 1.5rem;
+      background: #f8f9fa;
+      border-radius: 12px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .tabs {
+      margin-top: 3rem;
+      border-top: 2px solid #e0e0e0;
+      padding-top: 2rem;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .tab-btn {
+      padding: 1rem 0;
+      background: none;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #666;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.3s;
+    }
+
+    .tab-btn.active {
+      color: #1c1c75;
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #1c1c75;
+    }
+
+    .related-products {
+      margin-top: 4rem;
+    }
+
+    .related-products h2 {
+      text-align: center;
+      font-size: 2rem;
+      color: #1c1c75;
+      margin-bottom: 2rem;
+    }
+
+    .breadcrumb {
+      max-width: 1200px;
+      margin: 2rem auto 0;
+      padding: 0 2rem;
+      display: flex;
+      gap: 0.5rem;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb a {
+      color: #1c1c75;
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .product-detail-container {
+        grid-template-columns: 1fr;
+      }
+
+      .main-image {
+        height: 300px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- STRIP BIRU ATAS -->
+  <div class="top-bar"></div>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="nav-left">
+        <div class="logo"><a href="{% url 'products:index' %}">LOKA.CO</a></div>
+        <nav class="nav-links">
+          <div class="dropdown">
+            <button class="dropbtn">Shop ▾</button>
+            <div class="dropdown-content">
+              <a href="#">Keychains</a>
+              <a href="#">Collections</a>
+            </div>
+          </div>
+          <a href="{% url 'products:index' %}#top-selling">On Sale</a>
+          <a href="{% url 'products:index' %}#new-arrivals">New Arrivals</a>
+        </nav>
+      </div>
+
+      <div class="nav-center">
+        <input type="text" class="search-input" placeholder="Search for products...">
+      </div>
+
+      <div class="nav-right">
+        <a href="{% url 'products:dashboard' %}" class="icon">🧑</a>
+        <a href="{% url 'products:cart' %}" class="icon">🛒</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="{% url 'products:index' %}">Home</a>
+    <span>›</span>
+    <a href="#">Shop</a>
+    <span>›</span>
+    <span>{{ product.name }}</span>
+  </div>
+
+  <!-- PRODUCT DETAIL -->
+  <div class="product-detail-container">
+    
+    <!-- Left: Images -->
+    <div class="product-images">
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="main-image" id="mainImage">
+      {% else %}
+        <img src="{% static 'img/billiard ball.png' %}" alt="{{ product.name }}" class="main-image" id="mainImage">
+      {% endif %}
+      
+      <div class="thumbnail-images">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" class="thumbnail active" onclick="changeImage(this)">
+        {% else %}
+          <img src="{% static 'img/billiard ball.png' %}" alt="{{ product.name }}" class="thumbnail active" onclick="changeImage(this)">
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right: Info -->
+    <div class="product-info">
+      <h1>{{ product.name }}</h1>
+      
+      <div class="rating-section">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <span class="review-count">({{ product.rating|default:"4.5" }}/5) • 45 Reviews</span>
+      </div>
+
+      <div class="price">Rp{{ product.price|floatformat:0 }}</div>
+
+      <p class="description">
+        {{ product.description|default:"Gantungan kunci ini dirancang dengan perhatian khusus pada detail. Terbuat dari bahan berkualitas tinggi yang tahan lama, cocok untuk menemani aktivitas sehari-hari Anda. Desain yang unik ini akan membawa cerita kecil ke mana pun Anda pergi." }}
+      </p>
+
+      <!-- Quantity Selector (Not used for now, but can be implemented later) -->
+      <div class="quantity-selector" style="display: none;">
+        <label style="font-weight: 600;">Quantity:</label>
+        <button class="quantity-btn" onclick="decreaseQty()">−</button>
+        <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="99">
+        <button class="quantity-btn" onclick="increaseQty()">+</button>
+      </div>
+
+      <!-- ✅ Action Buttons - UPDATED dengan FORM POST -->
+      <div class="action-buttons">
+        <!-- ADD TO CART BUTTON -->
+        <form method="post" action="{% url 'products:add_to_cart' product.id %}" style="flex: 2;">
+          {% csrf_token %}
+          <button type="submit" class="btn-add-cart">🛒 Add to Cart</button>
+        </form>
+
+        <!-- BUY NOW BUTTON - Langsung ke checkout (setelah add to cart) -->
+        <form method="post" action="{% url 'products:add_to_cart' product.id %}" style="flex: 1;">
+          {% csrf_token %}
+          <input type="hidden" name="buy_now" value="true">
+          <button type="submit" class="btn-buy-now">⚡ Buy Now</button>
+        </form>
+      </div>
+
+      <!-- Product Features -->
+      <div class="product-features">
+        <div class="feature-item">
+          <span>✅</span>
+          <span>Kualitas Premium</span>
+        </div>
+        <div class="feature-item">
+          <span>🚚</span>
+          <span>Free Shipping</span>
+        </div>
+        <div class="feature-item">
+          <span>💎</span>
+          <span>100% Original</span>
+        </div>
+        <div class="feature-item">
+          <span>🔒</span>
+          <span>Secure Payment</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="product-detail-container" style="grid-template-columns: 1fr;">
+    <div class="tabs">
+      <div class="tab-buttons">
+        <button class="tab-btn active" onclick="showTab('details')">Product Details</button>
+        <button class="tab-btn" onclick="showTab('reviews')">Rating & Reviews</button>
+        <button class="tab-btn" onclick="showTab('faq')">FAQs</button>
+      </div>
+      
+      <div id="tab-details" class="tab-content">
+        <h3 style="margin-bottom: 1rem;">Product Specifications</h3>
+        <p style="color: #666; line-height: 1.8;">
+          {{ product.description|default:"Material berkualitas tinggi dengan finishing yang sempurna. Setiap detail dirancang dengan cermat untuk memberikan pengalaman terbaik." }}
+        </p>
+      </div>
+
+      <div id="tab-reviews" class="tab-content" style="display: none;">
+        <h3 style="margin-bottom: 1rem;">Customer Reviews</h3>
+        <p style="color: #666;">Review section coming soon...</p>
+      </div>
+
+      <div id="tab-faq" class="tab-content" style="display: none;">
+        <h3 style="margin-bottom: 1rem;">Frequently Asked Questions</h3>
+        <p style="color: #666;">FAQ section coming soon...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RELATED PRODUCTS -->
+  {% if related_products %}
+  <div class="related-products">
+    <h2>You might also like</h2>
+    <div class="product-grid" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+      {% for related in related_products %}
+      <div class="product-card">
+        <a href="{% url 'products:product_detail' related.id %}">
+          <img src="{{ related.image.url }}" alt="{{ related.name }}">
+        </a>
+        <h3>
+          <a href="{% url 'products:product_detail' related.id %}" style="text-decoration: none; color: inherit;">
+            {{ related.name }}
+          </a>
+        </h3>
+        <div class="rating">⭐ {{ related.rating|default:"4.5" }}</div>
+        <p class="price">Rp{{ related.price|floatformat:0 }}</p>
+        
+        <!-- ADD TO CART di Related Products -->
+        <form method="post" action="{% url 'products:add_to_cart' related.id %}" style="margin-top: 10px;">
+          {% csrf_token %}
+          <button type="submit" style="width: 100%; padding: 10px; background: #1c1c75; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+            🛒 Add to Cart
+          </button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="newsletter">
+      <h2>CARRY A LITTLE STORY WITH YOU</h2>
+      <div class="subscribe">
+        <input type="email" placeholder="Enter your email address">
+        <button>Subscribe to Newsletter</button>
+      </div>
+    </div>
+
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>COMPANY</h4>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>HELP</h4>
+        <a href="#">Customer Support</a>
+        <a href="#">Delivery Details</a>
+        <a href="#">Privacy Policy</a>
+      </div>
+      <div class="footer-col">
+        <h4>RESOURCES</h4>
+        <a href="#">Terms & Conditions</a>
+        <a href="#">Blog</a>
+      </div>
+    </div>
+
+    <p class="copyright">© 2025 LOKA.CO – All Rights Reserved</p>
+  </footer>
+
+  <script>
+    // Image Gallery
+    function changeImage(thumbnail) {
+      document.getElementById('mainImage').src = thumbnail.src;
+      document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+      thumbnail.classList.add('active');
+    }
+
+    // Tabs
+    function showTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById('tab-' + tabName).style.display = 'block';
+      event.target.classList.add('active');
+    }
+
+    // Dropdown
+    const dropbtn = document.querySelector(".dropbtn");
+    const dropdownContent = document.querySelector(".dropdown-content");
+
+    if (dropbtn) {
+      dropbtn.addEventListener("click", () => {
+        dropdownContent.classList.toggle("show");
+      });
+
+      window.addEventListener("click", (e) => {
+        if (!e.target.matches('.dropbtn')) {
+          dropdownContent.classList.remove('show');
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

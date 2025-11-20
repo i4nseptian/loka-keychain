@@ -1,0 +1,585 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOKA.CO | Carry A Little Story With You</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Tambahan style untuk hover effect pada product card */
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .product-card a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .product-card h3 {
+            transition: color 0.3s ease;
+        }
+        
+        .product-card:hover h3 {
+            color: #1c1c75;
+        }
+
+        /* --- STYLES FOR NEW SECTIONS --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* CUSTOMERS SECTION */
+        .customers-section {
+            background-color: #f8f8f8;
+            padding: 60px 0;
+            text-align: center;
+        }
+        .customers-section .section-title {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            color: #333;
+            font-weight: 700;
+        }
+        .customer-reviews {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .review-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: left;
+            width: calc(33% - 20px);
+            min-width: 280px;
+        }
+        .review-card .stars {
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        .review-card .customer-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .review-card .verified-badge {
+            background-color: #28a745;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+        .review-card .review-text {
+            color: #555;
+            line-height: 1.6;
+        }
+        .review-navigation {
+            margin-top: 40px;
+        }
+        .nav-button {
+            background-color: #eee;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin: 0 10px;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: #555;
+            transition: background-color 0.3s ease;
+        }
+        .nav-button:hover {
+            background-color: #ddd;
+        }
+
+        /* NEWSLETTER SECTION (Mengganti CSS Footer lama) */
+        .newsletter-section {
+            background-color: #1c1c75;
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        .newsletter-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .newsletter-text h2 {
+            font-size: 2.5em;
+            margin: 0;
+            text-align: left;
+            font-weight: 700;
+        }
+        .newsletter-form-container {
+            flex-basis: 45%;
+            min-width: 300px;
+            text-align: right;
+        }
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .newsletter-form input[type="email"] {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        .newsletter-form .subscribe-button {
+            background-color: white;
+            color: #1c1c75;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: bold;
+        }
+        .newsletter-form .subscribe-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* FOOTER BARU */
+        .main-footer {
+            background-color: #333;
+            color: #bbb;
+            padding: 60px 0 20px;
+            font-size: 0.9em;
+        }
+        .footer-grid-new { /* Diganti namanya agar tidak konflik dengan footer lama */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .footer-brand .brand-name {
+            color: white;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        .footer-brand p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .social-icons a {
+            color: white;
+            font-size: 1.5em;
+            margin-right: 15px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .social-icons a:hover {
+            color: #1c1c75;
+        }
+        .footer-column-new h4 {
+            color: white;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        .footer-column-new ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .footer-column-new ul li {
+            margin-bottom: 10px;
+        }
+        .footer-column-new ul li a {
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-column-new ul li a:hover {
+            color: white;
+        }
+        .footer-bottom-new {
+            border-top: 1px solid #444;
+            padding-top: 20px;
+            text-align: center;
+        }
+        .footer-bottom-new .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .footer-bottom-new p {
+            margin: 0;
+        }
+        .payment-methods img {
+            margin-left: 10px;
+            height: 20px;
+        }
+
+        /* RESPONSIVE ADJUSTMENTS */
+        @media (max-width: 768px) {
+            .customer-reviews {
+                flex-direction: column;
+                align-items: center;
+            }
+            .review-card {
+                width: 90%;
+            }
+            .newsletter-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 30px;
+            }
+            .newsletter-text h2 {
+                text-align: center;
+                font-size: 2em;
+            }
+            .newsletter-form-container {
+                flex-basis: 100%;
+            }
+            .newsletter-form input, .newsletter-form button {
+                width: 100%;
+                max-width: 400px;
+            }
+            .footer-grid-new {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .footer-bottom-new .container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .footer-brand .social-icons {
+                justify-content: center;
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar"></div>
+
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="nav-left">
+                <div class="logo"><a href="{% url 'products:index' %}">LOKA.CO</a></div>
+                <nav class="nav-links">
+                    <div class="dropdown">
+                        <button class="dropbtn">Shop ▾</button>
+                        <div class="dropdown-content">
+                            <a href="#">Keychains</a>
+                            <a href="#">Collections</a>
+                        </div>
+                    </div>
+                    <a href="#top-selling">On Sale</a>
+                    <a href="#new-arrivals">New Arrivals</a>
+                </nav>
+            </div>
+
+            <div class="nav-center">
+                <input type="text" class="search-input" placeholder="Search for products...">
+            </div>
+
+            <div class="nav-right">
+                <a href="{% url 'products:dashboard' %}" class="icon">🧍</a>
+                <a href="{% url 'products:cart' %}" class="icon">🛒</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero" style="position: relative; height: 550px; display: flex; align-items: center; justify-content: flex-start; padding-left: 80px; overflow: hidden;">
+        <div style="
+            position: absolute;
+            inset: 0;
+            background-image: url('{% static 'img/foto bg keychain.png' %}');
+            background-repeat: no-repeat;
+            background-position: right center;
+            background-size: 55%;
+            opacity: 0.65;
+            z-index: 0;
+            transition: opacity 0.3s ease, background-size 0.3s ease;
+        "></div>
+        
+        <div class="hero-text" style="z-index: 2; position: relative; max-width: 500px;">
+            <h1 style="font-size: 48px; font-weight: 800; color: #1c1c75; margin-bottom: 15px; line-height: 1.2;">
+                CARRY A LITTLE STORY WITH YOU
+            </h1>
+            <p style="color: #444; margin-bottom: 25px; font-size: 16px;">
+                Browse through our diverse range of meticulously crafted keychains,<br>
+                designed to bring charm and character to your personal style.
+            </p>
+            <a href="#new-arrivals" class="btn-dark" style="display: inline-block; background: #000; color: #fff; padding: 12px 32px; border-radius: 25px; font-weight: 600; text-decoration: none; transition: all 0.3s;">
+                Shop Now
+            </a>
+        </div>
+    </section>
+
+    <div class="bottom-bar"></div>
+
+    <section id="new-arrivals" class="product-section">
+        <h2>NEW ARRIVALS</h2>
+        <div class="product-grid">
+            {% if products %}
+                {% for product in products|slice:":4" %}
+                <div class="product-card">
+                    <a href="{% url 'products:product_detail' product.id %}">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <img src="{% static 'img/billiard ball.png' %}" alt="{{ product.name }}">
+                        {% endif %}
+                        <h3>{{ product.name }}</h3>
+                        <div class="rating">⭐ {{ product.rating|default:"4.5" }}</div>
+                        <p class="price">Rp{{ product.price|floatformat:0 }}</p>
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="product-card">
+                    <a href="#">
+                        <img src="{% static 'img/billiard ball.png' %}" alt="Billiard Ball">
+                        <h3>Billiard Ball Keychain</h3>
+                        <div class="rating">⭐ 4.9</div>
+                        <p class="price">Rp25.000</p>
+                    </a>
+                </div>
+                <div class="product-card">
+                    <a href="#">
+                        <img src="{% static 'img/guitar 1.png' %}" alt="Guitar">
+                        <h3>Guitar Shaped Keychain</h3>
+                        <div class="rating">⭐ 4.5</div>
+                        <p class="price">Rp60.000</p>
+                    </a>
+                </div>
+                <div class="product-card">
+                    <a href="#">
+                        <img src="{% static 'img/dice keychain.png' %}" alt="Dice">
+                        <h3>Dice Keychain</h3>
+                        <div class="rating">⭐ 4.5</div>
+                        <p class="price">Rp25.000</p>
+                    </a>
+                </div>
+                <div class="product-card">
+                    <a href="#">
+                        <img src="{% static 'img/hotwheels 1.png' %}" alt="Hot Wheels">
+                        <h3>Hot Wheels Car Keychain</h3>
+                        <div class="rating">⭐ 4.4</div>
+                        <p class="price">Rp35.000</p>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="view-all-container">
+            <a href="#" class="btn-outline">View All</a>
+        </div>
+    </section>
+
+    <section id="top-selling" class="product-section">
+        <h2>TOP SELLING</h2>
+        <div class="product-grid">
+            {% if products %}
+                {% for product in products|slice:"4:8" %}
+                <div class="product-card">
+                    <a href="{% url 'products:product_detail' product.id %}">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        <h3>{{ product.name }}</h3>
+                        <div class="rating">⭐ {{ product.rating|default:"4.8" }}</div>
+                        <p class="price">Rp{{ product.price|floatformat:0 }}</p>
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="product-card">
+                    <a href="#">
+                        <img src="{% static 'img/hotwheels 1.png' %}" alt="Hot Wheels">
+                        <h3>Red Hot Wheels Car Keychain</h3>
+                        <div class="rating">⭐ 5.0</div>
+                        <p class="price">Rp40.000</p>
+                    </a>
+                </div>
+                <div class="product-card">
+                    <a href="#">
+                        <img src="{% static 'img/guitar 2.png' %}" alt="Guitar">
+                        <h3>Guitar Shaped Keychain</h3>
+                        <div class="rating">⭐ 4.9</div>
+                        <p class="price">Rp30.000</p>
+                    </a>
+                </div>
+                <div class="product-card">
+                    <a href="#">
+                        <img src="{% static 'img/hotwheels 2.png' %}" alt="Hot Wheels">
+                        <h3>Hot Wheels Car Keychain</h3>
+                        <div class="rating">⭐ 4.8</div>
+                        <p class="price">Rp35.000</p>
+                    </a>
+                </div>
+                <div class="product-card">
+                    <a href="#">
+                        <img src="{% static 'img/dice keychain.png' %}" alt="Dice">
+                        <h3>Dice Keychain</h3>
+                        <div class="rating">⭐ 4.6</div>
+                        <p class="price">Rp20.000</p>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="view-all-container">
+            <a href="#" class="btn-outline">View All</a>
+        </div>
+    </section>
+
+    <section class="customers-section">
+        <div class="container">
+            <h2 class="section-title">OUR HAPPY CUSTOMERS</h2>
+            <div class="customer-reviews">
+                <div class="review-card">
+                    <div class="stars">
+                        <span class="star-icon">&#9733;&#9733;&#9733;&#9733;&#9733;</span> 
+                    </div>
+                    <h3 class="customer-name">Sarah M. <span class="verified-badge">✔</span></h3>
+                    <p class="review-text">"I love the keychain's unique design! It's lightweight but feels very durable. The details are so cute and stylish. I've even received compliments from my friends!"</p>
+                </div>
+                <div class="review-card">
+                    <div class="stars">
+                        <span class="star-icon">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                    </div>
+                    <h3 class="customer-name">Alex K. <span class="verified-badge">✔</span></h3>
+                    <p class="review-text">"The packaging was neat, and the product arrived quickly. The keychain matches perfectly with my car keys. It's small, simple, and classy."</p>
+                </div>
+                <div class="review-card">
+                    <div class="stars">
+                        <span class="star-icon">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                    </div>
+                    <h3 class="customer-name">James L. <span class="verified-badge">✔</span></h3>
+                    <p class="review-text">"I bought two keychains — one for me and one as a gift. Both look amazing! The quality is great, and it really adds personality to my daily items."</p>
+                </div>
+            </div>
+            <div class="review-navigation">
+                <button class="nav-button">&larr;</button>
+                <button class="nav-button">&rarr;</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter-section">
+        <div class="container newsletter-content">
+            <div class="newsletter-text">
+                <h2>CARRY A LITTLE STORY WITH YOU</h2>
+            </div>
+            <div class="newsletter-form-container">
+                <form action="#" method="post" class="newsletter-form">
+                    {% csrf_token %}
+                    <input type="email" name="email" placeholder="Enter your email address" required>
+                    <button type="submit" class="subscribe-button">Subscribe to Newsletter</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="container footer-grid-new">
+            <div class="footer-brand">
+                <h3 class="brand-name">LOKA.CO</h3>
+                <p>membawa cerita dan budaya ke dalam setiap gantungan kunci.
+Ekspresikan gaya dan identitasmu lewat desain yang punya makna..</p>
+                <div class="social-icons">
+                    <a href="#" class="social-icon">F</a> 
+                    <a href="#" class="social-icon">T</a>
+                    <a href="#" class="social-icon">I</a>
+                </div>
+            </div>
+            <div class="footer-column-new">
+                <h4>COMPANY</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Works</a></li>
+                    <li><a href="#">Career</a></li>
+                </ul>
+            </div>
+            <div class="footer-column-new">
+                <h4>HELP</h4>
+                <ul>
+                    <li><a href="#">Customer Support</a></li>
+                    <li><a href="#">Delivery Details</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-column-new">
+                <h4>FAQ</h4>
+                <ul>
+                    <li><a href="#">Account</a></li>
+                    <li><a href="#">Manage Deliveries</a></li>
+                    <li><a href="#">Orders</a></li>
+                    <li><a href="#">Payments</a></li>
+                </ul>
+            </div>
+            <div class="footer-column-new">
+                <h4>RESOURCES</h4>
+                <ul>
+                    <li><a href="#">Free eBooks</a></li>
+                    <li><a href="#">Development Tutorial</a></li>
+                    <li><a href="#">How to - Blog</a></li>
+                    <li><a href="#">Youtube Playlist</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom-new">
+            <div class="container">
+                <p>&copy; 2000-2023, All Rights Reserved</p>
+                <div class="payment-methods">
+                    {# Ganti dengan ikon pembayaran Anda #}
+                    <img src="{% static 'img/visa_icon.png' %}" alt="Visa" width="40" height="20">
+                    <img src="{% static 'img/mastercard_icon.png' %}" alt="Mastercard" width="40" height="20">
+                    <img src="{% static 'img/paypal_icon.png' %}" alt="PayPal" width="40" height="20">
+                    <img src="{% static 'img/applepay_icon.png' %}" alt="Apple Pay" width="40" height="20">
+                    <img src="{% static 'img/googlepay_icon.png' %}" alt="Google Pay" width="40" height="20">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        const dropbtn = document.querySelector(".dropbtn");
+        const dropdownContent = document.querySelector(".dropdown-content");
+
+        dropbtn.addEventListener("click", () => {
+            dropdownContent.classList.toggle("show");
+        });
+
+        window.addEventListener("click", (e) => {
+            if (!e.target.matches('.dropbtn')) {
+                dropdownContent.classList.remove('show');
+            }
+        });
+
+        // Hover effect untuk background hero
+        const hero = document.querySelector('.hero');
+        const heroBg = hero.querySelector('div');
+        hero.addEventListener('mouseenter', () => {
+            heroBg.style.opacity = '0.8';
+            heroBg.style.backgroundSize = '58%';
+        });
+        hero.addEventListener('mouseleave', () => {
+            heroBg.style.opacity = '0.65';
+            heroBg.style.backgroundSize = '55%';
+        });
+    </script>
+
+</body>
+</html>

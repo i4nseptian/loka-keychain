@@ -1,0 +1,50 @@
+/* 🌙 LOKA.CO Admin Custom */
+:root {
+  --primary-color: #1c1c75;
+  --accent-color: #00bcd4;
+}
+
+body, .sidebar, .navbar, .content {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #101046 !important;
+  border-right: 1px solid #1c1c75 !important;
+}
+
+/* Header */
+header.navbar {
+  background-color: #1c1c75 !important;
+  border-bottom: 1px solid #00bcd4 !important;
+}
+
+/* Tombol */
+.btn, button, .button {
+  border-radius: 8px !important;
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+  transition: all 0.3s ease;
+}
+.btn:hover, button:hover {
+  background-color: var(--accent-color) !important;
+}
+
+/* Link hover */
+a:hover {
+  color: var(--accent-color) !important;
+}
+
+/* Logo efek glow */
+.navbar .site-logo img {
+  border-radius: 6px;
+  filter: drop-shadow(0 0 4px #00bcd4);
+}
+
+/* Card look */
+.card, .module {
+  border-radius: 12px !important;
+  background-color: #15155a !important;
+  border: 1px solid #1c1c75 !important;
+}

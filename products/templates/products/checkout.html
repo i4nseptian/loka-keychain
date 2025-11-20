@@ -1,0 +1,739 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - LOKA.CO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    .top-bar {
+      height: 8px;
+      background: linear-gradient(90deg, #1c1c75 0%, #2563eb 100%);
+    }
+
+    /* Navbar */
+    .navbar {
+      background: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1c1c75;
+      text-decoration: none;
+    }
+
+    .checkout-steps {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #999;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .step.active {
+      color: #1c1c75;
+      font-weight: 600;
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      color: #999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .step.active .step-number {
+      background: linear-gradient(135deg, #1c1c75 0%, #2563eb 100%);
+      color: white;
+    }
+
+    .step.completed .step-number {
+      background: #10b981;
+      color: white;
+    }
+
+    .step-arrow {
+      color: #ccc;
+      font-size: 1.2rem;
+    }
+
+    /* Container */
+    .checkout-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 2rem;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1c1c75;
+      margin-bottom: 1.5rem;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #1c1c75;
+      font-weight: 500;
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+      transition: transform 0.2s;
+    }
+
+    .back-btn:hover {
+      transform: translateX(-4px);
+    }
+
+    /* Product Items */
+    .product-items {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 1.5rem;
+    }
+
+    .product-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: #f9fafb;
+      border-radius: 12px;
+    }
+
+    .product-image {
+      width: 60px;
+      height: 60px;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .product-info {
+      flex: 1;
+    }
+
+    .product-name {
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 0.25rem;
+    }
+
+    .product-details {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    .product-price {
+      font-weight: 600;
+      color: #1c1c75;
+      margin-top: 0.25rem;
+    }
+
+    /* Form */
+    .form-section {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 1rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 0.5rem;
+    }
+
+    label .required {
+      color: #ef4444;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid #d1d5db;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #1c1c75;
+      box-shadow: 0 0 0 3px rgba(28, 28, 117, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Shipping Options */
+    .shipping-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .shipping-option {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .shipping-option:hover {
+      border-color: #1c1c75;
+      background: #f9fafb;
+    }
+
+    .shipping-option.selected {
+      border-color: #1c1c75;
+      background: #eff6ff;
+    }
+
+    .shipping-radio {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #d1d5db;
+      border-radius: 50%;
+      margin-right: 1rem;
+      position: relative;
+    }
+
+    .shipping-option.selected .shipping-radio {
+      border-color: #1c1c75;
+    }
+
+    .shipping-option.selected .shipping-radio::after {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #1c1c75;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .shipping-info {
+      flex: 1;
+    }
+
+    .shipping-name {
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .shipping-time {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    .shipping-price {
+      font-weight: 600;
+      color: #1c1c75;
+    }
+
+    /* Checkout Button */
+    .checkout-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #1c1c75 0%, #2563eb 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 1rem;
+    }
+
+    .checkout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(28, 28, 117, 0.3);
+    }
+
+    .security-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      color: #6b7280;
+      font-size: 0.85rem;
+    }
+
+    /* Summary Card */
+    .summary-card {
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .summary-row:last-of-type {
+      border-bottom: none;
+    }
+
+    .summary-total {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1c1c75;
+      padding-top: 1rem;
+      border-top: 2px solid #e5e7eb;
+      margin-top: 0.5rem;
+    }
+
+    .summary-divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 1rem 0;
+    }
+
+    /* Voucher */
+    .voucher-section {
+      padding: 1rem 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .voucher-input {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .voucher-input input {
+      flex: 1;
+      padding: 0.65rem 1rem;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+    }
+
+    .apply-btn {
+      padding: 0.65rem 1.5rem;
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .apply-btn:hover {
+      background: #059669;
+    }
+
+    footer {
+      background: #1f2937;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 4rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .checkout-container {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-card {
+        position: relative;
+        top: 0;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .checkout-steps {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="{% url 'products:index' %}" class="logo">LOKA.CO</a>
+    
+    <!-- Checkout Steps -->
+    <div class="checkout-steps">
+      <div class="step completed">
+        <div class="step-number">✓</div>
+        <span>Cart</span>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step active">
+        <div class="step-number">2</div>
+        <span>Checkout</span>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <span>Payment</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="checkout-container">
+    
+    <!-- Left Side - Form -->
+    <div>
+      <a href="{% url 'products:cart' %}" class="back-btn">
+        <span>←</span>
+        <span>Back to Cart</span>
+      </a>
+
+      <div class="card">
+        <h1 class="card-title">🛒 Checkout</h1>
+
+        <!-- ✅ Products Preview - DINAMIS dari cart -->
+        <div class="product-items">
+          {% for item in cart_items %}
+          <div class="product-item">
+            <div class="product-image">
+              {% if item.image %}
+                <img src="{{ item.image }}" alt="{{ item.name }}">
+              {% else %}
+                🎁
+              {% endif %}
+            </div>
+            <div class="product-info">
+              <div class="product-name">{{ item.name }}</div>
+              <div class="product-details">Quantity: {{ item.quantity }}</div>
+              <div class="product-price">Rp {{ item.price|floatformat:0 }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Form -->
+        <form method="post" action="{% url 'products:checkout' %}">
+          {% csrf_token %}
+
+          <!-- Shipping Information -->
+          <div class="form-section">
+            <div class="section-title">📦 Shipping Information</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Full Name <span class="required">*</span></label>
+                <input type="text" name="full_name" placeholder="Achmad Septian" required>
+              </div>
+
+              <div class="form-group">
+                <label>Phone <span class="required">*</span></label>
+                <input type="tel" name="phone" placeholder="+62 812 3456 7890" required>
+              </div>
+
+              <div class="form-group full">
+                <label>Email <span class="required">*</span></label>
+                <input type="email" name="email" value="{{ user_email }}" required>
+              </div>
+
+              <div class="form-group full">
+                <label>Address <span class="required">*</span></label>
+                <input type="text" name="address" placeholder="Jl. Sudirman No. 123" required>
+              </div>
+
+              <div class="form-group">
+                <label>City <span class="required">*</span></label>
+                <input type="text" name="city" placeholder="Jakarta" required>
+              </div>
+
+              <div class="form-group">
+                <label>Postal Code <span class="required">*</span></label>
+                <input type="text" name="postal_code" placeholder="12345" required>
+              </div>
+
+              <div class="form-group full">
+                <label>Province <span class="required">*</span></label>
+                <select name="province" required>
+                  <option value="">Select Province</option>
+                  <option value="DKI Jakarta">DKI Jakarta</option>
+                  <option value="Jawa Barat">Jawa Barat</option>
+                  <option value="Jawa Tengah">Jawa Tengah</option>
+                  <option value="Jawa Timur">Jawa Timur</option>
+                  <option value="Bali">Bali</option>
+                  <option value="Sulawesi Tengah">Sulawesi Tengah</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shipping Method -->
+          <div class="form-section">
+            <div class="section-title">🚚 Shipping Method</div>
+            <div class="shipping-options">
+              <div class="shipping-option selected" onclick="selectShipping(this, 15000)">
+                <div class="shipping-radio"></div>
+                <div class="shipping-info">
+                  <div class="shipping-name">JNE Regular</div>
+                  <div class="shipping-time">Estimated 2-3 days</div>
+                </div>
+                <div class="shipping-price">Rp 15.000</div>
+              </div>
+
+              <div class="shipping-option" onclick="selectShipping(this, 25000)">
+                <div class="shipping-radio"></div>
+                <div class="shipping-info">
+                  <div class="shipping-name">JNE Express</div>
+                  <div class="shipping-time">Estimated 1-2 days</div>
+                </div>
+                <div class="shipping-price">Rp 25.000</div>
+              </div>
+
+              <div class="shipping-option" onclick="selectShipping(this, 10000)">
+                <div class="shipping-radio"></div>
+                <div class="shipping-info">
+                  <div class="shipping-name">SiCepat Regular</div>
+                  <div class="shipping-time">Estimated 3-4 days</div>
+                </div>
+                <div class="shipping-price">Rp 10.000</div>
+              </div>
+
+              <div class="shipping-option" onclick="selectShipping(this, 20000)">
+                <div class="shipping-radio"></div>
+                <div class="shipping-info">
+                  <div class="shipping-name">J&T Express</div>
+                  <div class="shipping-time">Estimated 2-3 days</div>
+                </div>
+                <div class="shipping-price">Rp 20.000</div>
+              </div>
+            </div>
+            <input type="hidden" name="shipping_method" id="shipping_method" value="jne_regular">
+          </div>
+
+          <!-- Order Notes -->
+          <div class="form-section">
+            <div class="section-title">📝 Order Notes (Optional)</div>
+            <div class="form-group">
+              <textarea name="order_notes" placeholder="Add any special instructions for your order..."></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="checkout-btn">
+            Proceed to Payment →
+          </button>
+
+          <div class="security-badge">
+            <span>🔒</span>
+            <span>Secure Checkout - Your information is protected</span>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right Side - Order Summary -->
+    <div>
+      <div class="card summary-card">
+        <h2 class="card-title">📋 Order Summary</h2>
+
+        <div class="summary-row">
+          <span>Subtotal ({{ cart_count }} items)</span>
+          <span id="subtotal">Rp {{ subtotal|floatformat:0 }}</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Shipping Fee</span>
+          <span id="shipping-fee">Rp {{ shipping|floatformat:0 }}</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Tax (10%)</span>
+          <span id="tax">Rp {{ tax|floatformat:0 }}</span>
+        </div>
+
+        <!-- Voucher Section -->
+        <div class="voucher-section">
+          <div class="section-title" style="font-size: 0.95rem;">🎟️ Voucher Code</div>
+          <div class="voucher-input">
+            <input type="text" placeholder="Enter voucher code" id="voucher-input">
+            <button class="apply-btn" onclick="applyVoucher()">Apply</button>
+          </div>
+        </div>
+
+        <div class="summary-row" id="discount-row" style="display: none; color: #10b981;">
+          <span>Discount</span>
+          <span id="discount">- Rp 0</span>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-row summary-total">
+          <span>Total</span>
+          <span id="total">Rp {{ total|floatformat:0 }}</span>
+        </div>
+
+        <div style="background: #f0fdf4; padding: 1rem; border-radius: 10px; margin-top: 1rem;">
+          <p style="font-size: 0.85rem; color: #065f46; text-align: center;">
+            ✓ Free returns within 7 days<br>
+            ✓ 100% Authentic products
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© 2025 LOKA.CO — All Rights Reserved</p>
+  </footer>
+
+  <script>
+    // ✅ Ambil data dari Django template
+    let currentShippingFee = {{ shipping }};
+    const subtotal = {{ subtotal }};
+    const taxRate = 0.10;
+    let discountAmount = 0;
+
+    function selectShipping(element, fee) {
+      // Remove selected from all
+      document.querySelectorAll('.shipping-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      
+      // Add selected to clicked
+      element.classList.add('selected');
+      
+      // Update shipping fee
+      currentShippingFee = fee;
+      
+      // Update hidden input
+      const shippingNames = {
+        15000: 'jne_regular',
+        25000: 'jne_express',
+        10000: 'sicepat_regular',
+        20000: 'jnt_express'
+      };
+      document.getElementById('shipping_method').value = shippingNames[fee] || 'jne_regular';
+      
+      updateTotal();
+    }
+
+    function updateTotal() {
+      const tax = Math.round((subtotal + currentShippingFee) * taxRate);
+      const total = subtotal + currentShippingFee + tax - discountAmount;
+
+      document.getElementById('shipping-fee').textContent = 'Rp ' + currentShippingFee.toLocaleString('id-ID');
+      document.getElementById('tax').textContent = 'Rp ' + tax.toLocaleString('id-ID');
+      document.getElementById('total').textContent = 'Rp ' + total.toLocaleString('id-ID');
+    }
+
+    function applyVoucher() {
+      const voucherCode = document.getElementById('voucher-input').value.toUpperCase();
+      
+      if (voucherCode === 'LOKA10') {
+        discountAmount = 25000;
+        document.getElementById('discount-row').style.display = 'flex';
+        document.getElementById('discount').textContent = '- Rp ' + discountAmount.toLocaleString('id-ID');
+        updateTotal();
+        alert('✅ Voucher applied! You saved Rp 25.000');
+      } else if (voucherCode === '') {
+        alert('⚠️ Please enter a voucher code');
+      } else {
+        alert('❌ Invalid voucher code');
+      }
+    }
+
+    // Initialize total on page load
+    updateTotal();
+  </script>
+
+</body>
+</html>

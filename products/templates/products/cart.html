@@ -1,0 +1,514 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart - LOKA.CO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+      min-height: 100vh;
+    }
+
+    .top-bar {
+      height: 8px;
+      background: linear-gradient(90deg, #1c1c75 0%, #2563eb 100%);
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .navbar-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo a {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1c1c75;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: #1c1c75;
+    }
+
+    /* Main Content */
+    .cart-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .back-link a {
+      color: #1c1c75;
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: inline-block;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1c1c75;
+      margin-bottom: 2rem;
+    }
+
+    /* Empty Cart */
+    .empty-cart {
+      background: white;
+      border-radius: 12px;
+      padding: 4rem 2rem;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .empty-cart h2 {
+      font-size: 1.5rem;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .empty-cart a {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.75rem 2rem;
+      background: #1c1c75;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+
+    .empty-cart a:hover {
+      background: #15155a;
+    }
+
+    .cart-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 2rem;
+    }
+
+    .cart-items {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .cart-item {
+      background-color: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      transition: transform 0.2s;
+    }
+
+    .cart-item:hover {
+      transform: translateY(-2px);
+    }
+
+    .cart-item img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      background-color: #f0f0f0;
+    }
+
+    .item-details {
+      flex: 1;
+    }
+
+    .item-details h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    .item-details .price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1c1c75;
+      margin-bottom: 1rem;
+    }
+
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      width: fit-content;
+      padding: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .qty-btn {
+      background: none;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      color: #666;
+      font-size: 1.2rem;
+      font-weight: 700;
+      transition: color 0.2s;
+    }
+
+    .qty-btn:hover {
+      color: #1c1c75;
+    }
+
+    .qty-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .quantity-control input {
+      width: 40px;
+      text-align: center;
+      border: none;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .item-actions {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .item-total {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1c1c75;
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #ef4444;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .remove-btn:hover {
+      opacity: 0.7;
+    }
+
+    /* Order Summary */
+    .order-summary {
+      height: fit-content;
+      position: sticky;
+      top: 2rem;
+      background-color: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .order-summary h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1c1c75;
+      margin-bottom: 1.5rem;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .summary-row span:first-child {
+      color: #666;
+    }
+
+    .summary-value {
+      font-weight: 600;
+    }
+
+    .summary-divider {
+      border-top: 2px solid #e0e0e0;
+      margin: 1rem 0;
+    }
+
+    .summary-row.total {
+      font-size: 1.25rem;
+    }
+
+    .summary-row.total span {
+      font-weight: 700;
+    }
+
+    .summary-row.total .summary-value {
+      color: #1c1c75;
+    }
+
+    .checkout-btn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      background-color: #1c1c75;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      margin-top: 1.5rem;
+      transition: background-color 0.3s;
+    }
+
+    .checkout-btn:hover {
+      background-color: #15155a;
+    }
+
+    .checkout-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .free-shipping-info {
+      font-size: 0.85rem;
+      color: #999;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #1c1c75;
+      color: white;
+      padding: 3rem 2rem;
+      margin-top: 4rem;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .footer-content h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-content > p {
+      opacity: 0.8;
+      margin-bottom: 2rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+      opacity: 0.8;
+      transition: opacity 0.3s;
+    }
+
+    .footer-links a:hover {
+      opacity: 1;
+    }
+
+    .copyright {
+      opacity: 0.6;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .cart-layout {
+        grid-template-columns: 1fr;
+      }
+      .cart-item {
+        flex-direction: column;
+        text-align: center;
+      }
+      .item-actions {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Blue Bar -->
+  <div class="top-bar"></div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="logo"><a href="{% url 'products:index' %}">LOKA.CO</a></div>
+      <nav class="nav-links">
+        <a href="{% url 'products:index' %}">Shop</a>
+        <a href="#">Collections</a>
+        <a href="{% url 'products:cart' %}" class="active">🛒 Cart ({{ cart_count }})</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="cart-container">
+    <div class="back-link">
+      <a href="{% url 'products:index' %}">← Continue Shopping</a>
+    </div>
+
+    <h1>Your Shopping Cart</h1>
+
+    {% if cart_items %}
+    <div class="cart-layout">
+      <!-- Cart Items -->
+      <div class="cart-items">
+        {% for item in cart_items %}
+        <div class="cart-item" data-product-id="{{ item.id }}">
+          {% if item.image %}
+          <img src="{{ item.image }}" alt="{{ item.name }}">
+          {% else %}
+          <img src="{% static 'img/placeholder.png' %}" alt="{{ item.name }}">
+          {% endif %}
+          
+          <div class="item-details">
+            <h3>{{ item.name }}</h3>
+            <p class="price">Rp {{ item.price|floatformat:0 }}</p>
+            
+            <div class="quantity-control">
+              <button class="qty-btn" onclick="updateQuantity({{ item.id }}, -1)" {% if item.quantity <= 1 %}disabled{% endif %}>-</button>
+              <input type="number" value="{{ item.quantity }}" readonly>
+              <button class="qty-btn" onclick="updateQuantity({{ item.id }}, 1)">+</button>
+            </div>
+          </div>
+          
+          <div class="item-actions">
+            <p class="item-total">Rp {{ item.price|floatformat:0|add:item.quantity|floatformat:0 }}</p>
+            <form method="post" action="{% url 'products:remove_from_cart' item.id %}" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit" class="remove-btn" onclick="return confirm('Remove this item?')">🗑️ Remove</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <h2>Order Summary</h2>
+        <div class="summary-row">
+          <span>Subtotal ({{ cart_count }} items)</span>
+          <span class="summary-value" id="subtotal">Rp {{ subtotal|floatformat:0 }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping</span>
+          <span class="summary-value">Rp {{ shipping|floatformat:0 }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax (10%)</span>
+          <span class="summary-value">Rp {{ tax|floatformat:0 }}</span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span class="summary-value" id="total">Rp {{ total|floatformat:0 }}</span>
+        </div>
+        <a href="{% url 'products:checkout' %}" class="checkout-btn">Proceed to Checkout →</a>
+        <p class="free-shipping-info">Free shipping for orders over Rp 100.000</p>
+      </div>
+    </div>
+
+    {% else %}
+    <!-- Empty Cart -->
+    <div class="empty-cart">
+      <h2>🛒 Your cart is empty</h2>
+      <p>Add some awesome keychains to get started!</p>
+      <a href="{% url 'products:index' %}">Start Shopping</a>
+    </div>
+    {% endif %}
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <h3>LOKA.CO</h3>
+      <p>Carry A Little Story With You</p>
+      <div class="footer-links">
+        <a href="#">About</a>
+        <a href="{% url 'products:contact' %}">Contact</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+      </div>
+      <p class="copyright">© 2025 LOKA.CO — All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <script>
+    function updateQuantity(productId, change) {
+      // Send AJAX request to update quantity
+      fetch(`/cart/update/${productId}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ change: change })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Reload page to update cart
+          location.reload();
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

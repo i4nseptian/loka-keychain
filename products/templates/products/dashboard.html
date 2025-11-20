@@ -1,0 +1,902 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - LOKA.CO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    .top-bar {
+      height: 8px;
+      background: linear-gradient(90deg, #1c1c75 0%, #2563eb 100%);
+    }
+
+    /* Navbar */
+    .navbar {
+      background: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1c1c75;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #1c1c75;
+    }
+
+    .nav-icons {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      font-size: 1.2rem;
+    }
+
+    .nav-icons a {
+      text-decoration: none;
+      color: #333;
+      transition: transform 0.2s;
+      position: relative;
+    }
+
+    .nav-icons a:hover {
+      transform: scale(1.1);
+    }
+
+    .badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #ef4444;
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    /* Main Container */
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 2rem;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      height: fit-content;
+      position: sticky;
+      top: 90px;
+      overflow: hidden;
+    }
+
+    /* Profile Header */
+    .profile-header {
+      background: linear-gradient(135deg, #1c1c75 0%, #2563eb 100%);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="2" fill="white" opacity="0.1"/></svg>');
+      opacity: 0.3;
+    }
+
+    .profile-avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      margin: 0 auto 1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
+      border: 4px solid rgba(255,255,255,0.3);
+    }
+
+    .profile-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-email {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.25);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-top: 1rem;
+      position: relative;
+      z-index: 1;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Sidebar Menu */
+    .sidebar-menu {
+      padding: 1.5rem 0;
+    }
+
+    .menu-section {
+      padding: 0 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .menu-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      padding: 0 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1rem;
+      color: #555;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .menu-item:hover {
+      background: #f0f2f5;
+      color: #1c1c75;
+      transform: translateX(5px);
+    }
+
+    .menu-item.active {
+      background: linear-gradient(135deg, rgba(28,28,117,0.15) 0%, rgba(37,99,235,0.15) 100%);
+      color: #1c1c75;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(28,28,117,0.1);
+    }
+
+    .menu-icon {
+      font-size: 1.3rem;
+      width: 28px;
+      text-align: center;
+    }
+
+    .logout-btn {
+      margin: 0 1rem 1.5rem;
+      width: calc(100% - 2rem);
+      padding: 1rem;
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px rgba(239,68,68,0.3);
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239,68,68,0.4);
+    }
+
+    /* Main Content */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Content Section */
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, rgba(28,28,117,0.1) 0%, rgba(37,99,235,0.1) 100%);
+      border-radius: 0 0 0 100px;
+    }
+
+    .stat-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #1c1c75;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-label {
+      color: #666;
+      font-size: 0.9rem;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Orders Section */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1c1c75;
+    }
+
+    /* Filter Tabs */
+    .filter-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-tab {
+      padding: 0.75rem 1.5rem;
+      border: 2px solid #e0e0e0;
+      background: white;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .filter-tab:hover {
+      border-color: #1c1c75;
+      background: #f8f9ff;
+    }
+
+    .filter-tab.active {
+      background: linear-gradient(135deg, #1c1c75 0%, #2563eb 100%);
+      color: white;
+      border-color: #1c1c75;
+    }
+
+    /* Order Card */
+    .order-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+      border-left: 5px solid transparent;
+    }
+
+    .order-card:hover {
+      border-left-color: #1c1c75;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      transform: translateX(5px);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .order-id {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1c1c75;
+      margin-bottom: 0.5rem;
+    }
+
+    .order-date {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .order-status-badge {
+      padding: 0.6rem 1.5rem;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-paid {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-cancelled {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .order-items {
+      margin-bottom: 1.5rem;
+      padding: 1.5rem;
+      background: #f8f9fa;
+      border-radius: 12px;
+    }
+
+    .order-item-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    .order-item-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .item-name {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .order-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1c1c75;
+      padding-top: 1rem;
+      border-top: 2px solid #e0e0e0;
+      margin-bottom: 1.5rem;
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #1c1c75 0%, #2563eb 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(28,28,117,0.3);
+    }
+
+    .btn-outline {
+      background: white;
+      color: #1c1c75;
+      border: 2px solid #1c1c75;
+    }
+
+    .btn-outline:hover {
+      background: #1c1c75;
+      color: white;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: white;
+      border-radius: 16px;
+    }
+
+    .empty-icon {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      color: #1c1c75;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    /* Footer */
+    footer {
+      background: #1c1c75;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 4rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+      .dashboard-container {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="{% url 'products:index' %}" class="logo">LOKA.CO</a>
+    <div class="nav-links">
+      <a href="{% url 'products:index' %}">Home</a>
+      <a href="{% url 'products:index' %}#products">Products</a>
+      <a href="{% url 'products:contact' %}">Contact</a>
+    </div>
+    <div class="nav-icons">
+      <a href="{% url 'products:cart' %}">
+        🛒
+        <span class="badge">3</span>
+      </a>
+      <a href="{% url 'products:dashboard' %}">👤</a>
+    </div>
+  </nav>
+
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="profile-header">
+        <div class="profile-avatar">👤</div>
+        <div class="profile-name">{{ user_name }}</div>
+        <div class="profile-email">{{ user_email }}</div>
+        <div class="profile-badge">⭐ Premium Member</div>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="menu-section">
+          <div class="menu-label">Main</div>
+          <div class="menu-item active" onclick="showSection('overview')">
+            <span class="menu-icon">📊</span>
+            <span>Overview</span>
+          </div>
+          <div class="menu-item" onclick="showSection('orders')">
+            <span class="menu-icon">📦</span>
+            <span>My Orders</span>
+          </div>
+          <div class="menu-item" onclick="showSection('wishlist')">
+            <span class="menu-icon">❤️</span>
+            <span>Wishlist</span>
+          </div>
+        </div>
+
+        <div class="menu-section">
+          <div class="menu-label">Account</div>
+          <div class="menu-item" onclick="showSection('profile')">
+            <span class="menu-icon">👤</span>
+            <span>Profile</span>
+          </div>
+          <div class="menu-item" onclick="showSection('settings')">
+            <span class="menu-icon">⚙️</span>
+            <span>Settings</span>
+          </div>
+        </div>
+      </div>
+
+      <a href="{% url 'products:logout' %}">
+        <button class="logout-btn">
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Overview Section -->
+      <section class="content-section active" id="overview-section">
+        <h2 class="section-title">📊 Dashboard Overview</h2>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-value">{{ total_orders }}</div>
+            <div class="stat-label">Total Orders</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value">Rp {{ total_spending|floatformat:0 }}</div>
+            <div class="stat-label">Total Spending</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-value">{{ pending_orders }}</div>
+            <div class="stat-label">Pending Orders</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value">{{ completed_orders }}</div>
+            <div class="stat-label">Completed</div>
+          </div>
+        </div>
+
+        <!-- Recent Orders Preview -->
+        <div class="section-header">
+          <h3 class="section-title">Recent Orders</h3>
+          <a href="#" onclick="showSection('orders'); return false;" style="color: #1c1c75; text-decoration: none; font-weight: 600;">View All →</a>
+        </div>
+
+        {% if orders %}
+          {% for order in orders|slice:":3" %}
+          <div class="order-card">
+            <div class="order-header">
+              <div>
+                <div class="order-id">#{{ order.order_id }}</div>
+                <div class="order-date">{{ order.created_at|date:"d M Y, H:i" }}</div>
+              </div>
+              <span class="order-status-badge status-{{ order.status }}">
+                {% if order.status == 'pending' %}⏳ Pending
+                {% elif order.status == 'paid' %}💳 Paid
+                {% elif order.status == 'completed' %}✅ Completed
+                {% elif order.status == 'cancelled' %}❌ Cancelled
+                {% endif %}
+              </span>
+            </div>
+
+            <div class="order-total">
+              <span>Total Amount:</span>
+              <span>Rp {{ order.total_amount|floatformat:0 }}</span>
+            </div>
+
+            <div class="order-actions">
+              <a href="{% url 'products:order_detail' order.order_id %}" class="btn btn-primary">View Details</a>
+              {% if order.status == 'pending' or order.status == 'paid' %}
+              <button onclick="cancelOrder('{{ order.order_id }}')" class="btn btn-danger">Cancel Order</button>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <h3>No Orders Yet</h3>
+            <p>Start shopping to see your orders here!</p>
+            <a href="{% url 'products:index' %}" class="btn btn-primary">Start Shopping</a>
+          </div>
+        {% endif %}
+      </section>
+
+      <!-- My Orders Section -->
+      <section class="content-section" id="orders-section">
+        <div class="section-header">
+          <h2 class="section-title">📦 My Orders</h2>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterOrders('all')">All ({{ total_orders }})</button>
+          <button class="filter-tab" onclick="filterOrders('pending')">Pending ({{ pending_orders }})</button>
+          <button class="filter-tab" onclick="filterOrders('paid')">Paid ({{ paid_orders }})</button>
+          <button class="filter-tab" onclick="filterOrders('completed')">Completed ({{ completed_orders }})</button>
+          <button class="filter-tab" onclick="filterOrders('cancelled')">Cancelled ({{ cancelled_orders }})</button>
+        </div>
+
+        <div id="orders-container">
+          {% if orders %}
+            {% for order in orders %}
+            <div class="order-card" data-status="{{ order.status }}">
+              <div class="order-header">
+                <div>
+                  <div class="order-id">#{{ order.order_id }}</div>
+                  <div class="order-date">{{ order.created_at|date:"d M Y, H:i" }}</div>
+                </div>
+                <span class="order-status-badge status-{{ order.status }}">
+                  {% if order.status == 'pending' %}⏳ Pending
+                  {% elif order.status == 'paid' %}💳 Paid
+                  {% elif order.status == 'completed' %}✅ Completed
+                  {% elif order.status == 'cancelled' %}❌ Cancelled
+                  {% endif %}
+                </span>
+              </div>
+
+              <div class="order-total">
+                <span>Total Amount:</span>
+                <span>Rp {{ order.total_amount|floatformat:0 }}</span>
+              </div>
+
+              <div class="order-actions">
+                <a href="{% url 'products:order_detail' order.order_id %}" class="btn btn-primary">View Details</a>
+                {% if order.status == 'pending' or order.status == 'paid' %}
+                <button onclick="cancelOrder('{{ order.order_id }}')" class="btn btn-danger">Cancel Order</button>
+                {% endif %}
+                {% if order.status == 'completed' %}
+                <button class="btn btn-outline">Reorder</button>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="empty-state">
+              <div class="empty-icon">📦</div>
+              <h3>No Orders Yet</h3>
+              <p>Your order history will appear here</p>
+              <a href="{% url 'products:index' %}" class="btn btn-primary">Start Shopping</a>
+            </div>
+          {% endif %}
+        </div>
+      </section>
+
+      <!-- Other sections (Wishlist, Profile, Settings) -->
+      <section class="content-section" id="wishlist-section">
+        <h2 class="section-title">❤️ My Wishlist</h2>
+        <div class="empty-state">
+          <div class="empty-icon">❤️</div>
+          <h3>Your Wishlist is Empty</h3>
+          <p>Start adding products you love!</p>
+          <a href="{% url 'products:index' %}" class="btn btn-primary">Browse Products</a>
+        </div>
+      </section>
+
+      <section class="content-section" id="profile-section">
+        <h2 class="section-title">👤 My Profile</h2>
+        <div class="order-card">
+          <h3 style="margin-bottom: 1.5rem; color: #1c1c75;">Personal Information</h3>
+          <div class="order-item-row">
+            <span>Name:</span>
+            <span class="item-name">{{ user_name }}</span>
+          </div>
+          <div class="order-item-row">
+            <span>Email:</span>
+            <span class="item-name">{{ user_email }}</span>
+          </div>
+          <div class="order-item-row">
+            <span>Member Since:</span>
+            <span class="item-name">January 2025</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top: 1.5rem;">Edit Profile</button>
+        </div>
+      </section>
+
+      <section class="content-section" id="settings-section">
+        <h2 class="section-title">⚙️ Settings</h2>
+        <div class="order-card">
+          <h3 style="margin-bottom: 1.5rem; color: #1c1c75;">Account Settings</h3>
+          <p style="color: #666;">Settings page coming soon...</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p>© 2025 LOKA.CO — All Rights Reserved</p>
+  </footer>
+
+  <script>
+    // Show/Hide Sections
+    function showSection(sectionName) {
+      // Hide all sections
+      document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
+      });
+
+      // Remove active from all menu items
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+      });
+
+      // Show selected section
+      document.getElementById(sectionName + '-section').classList.add('active');
+
+      // Add active to clicked menu item
+      event.target.closest('.menu-item').classList.add('active');
+    }
+
+    // Filter Orders
+    function filterOrders(status) {
+      const orders = document.querySelectorAll('.order-card');
+      const tabs = document.querySelectorAll('.filter-tab');
+
+      // Update active tab
+      tabs.forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // Filter orders
+      orders.forEach(order => {
+        if (status === 'all' || order.dataset.status === status) {
+          order.style.display = 'block';
+        } else {
+          order.style.display = 'none';
+        }
+      });
+    }
+
+    // Cancel Order
+    function cancelOrder(orderId) {
+      if (!confirm('Are you sure you want to cancel this order?')) {
+        return;
+      }
+
+      fetch(`/cancel-order/${orderId}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Order cancelled successfully!');
+          location.reload();
+        } else {
+          alert('Failed to cancel order: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while cancelling the order.');
+      });
+    }
+  </script>
+</body>
+</html>
