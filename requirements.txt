@@ -6,3 +6,4 @@ dj-database-url
 python-decouple
 Pillow
 django-unfold
+djangorestframework
