@@ -324,14 +324,16 @@
       {% if product.image %}
         <img src="{{ product.image.url }}" alt="{{ product.name }}" class="main-image" id="mainImage">
       {% else %}
-        <img src="{% static 'img/billiard ball.png' %}" alt="{{ product.name }}" class="main-image" id="mainImage">
+        <!-- ✅ FIXED: billiard ball.png → billiard-ball.png -->
+        <img src="{% static 'img/billiard-ball.png' %}" alt="{{ product.name }}" class="main-image" id="mainImage">
       {% endif %}
       
       <div class="thumbnail-images">
         {% if product.image %}
           <img src="{{ product.image.url }}" alt="{{ product.name }}" class="thumbnail active" onclick="changeImage(this)">
         {% else %}
-          <img src="{% static 'img/billiard ball.png' %}" alt="{{ product.name }}" class="thumbnail active" onclick="changeImage(this)">
+          <!-- ✅ FIXED: billiard ball.png → billiard-ball.png -->
+          <img src="{% static 'img/billiard-ball.png' %}" alt="{{ product.name }}" class="thumbnail active" onclick="changeImage(this)">
         {% endif %}
       </div>
     </div>
@@ -485,7 +487,7 @@
       </div>
     </div>
 
-    <p class="copyright">© 2025 LOKA.CO – All Rights Reserved</p>
+    <p class="copyright">© 2025 LOKA.CO — All Rights Reserved</p>
   </footer>
 
   <script>

@@ -294,17 +294,18 @@
             </div>
 
             <div class="nav-right">
-                <a href="{% url 'products:dashboard' %}" class="icon">🧍</a>
+                <a href="{% url 'products:dashboard' %}" class="icon">🧑</a>
                 <a href="{% url 'products:cart' %}" class="icon">🛒</a>
             </div>
         </div>
     </header>
 
     <section class="hero" style="position: relative; height: 550px; display: flex; align-items: center; justify-content: flex-start; padding-left: 80px; overflow: hidden;">
+        <!-- ✅ FIXED: foto bg keychain.png → foto-bg-keychain.png -->
         <div style="
             position: absolute;
             inset: 0;
-            background-image: url('{% static 'img/foto bg keychain.png' %}');
+            background-image: url('{% static 'img/foto-bg-keychain.png' %}');
             background-repeat: no-repeat;
             background-position: right center;
             background-size: 55%;
@@ -339,7 +340,8 @@
                         {% if product.image %}
                             <img src="{{ product.image.url }}" alt="{{ product.name }}">
                         {% else %}
-                            <img src="{% static 'img/billiard ball.png' %}" alt="{{ product.name }}">
+                            <!-- ✅ FIXED: billiard ball.png → billiard-ball.png -->
+                            <img src="{% static 'img/billiard-ball.png' %}" alt="{{ product.name }}">
                         {% endif %}
                         <h3>{{ product.name }}</h3>
                         <div class="rating">⭐ {{ product.rating|default:"4.5" }}</div>
@@ -350,7 +352,8 @@
             {% else %}
                 <div class="product-card">
                     <a href="#">
-                        <img src="{% static 'img/billiard ball.png' %}" alt="Billiard Ball">
+                        <!-- ✅ FIXED: billiard ball.png → billiard-ball.png -->
+                        <img src="{% static 'img/billiard-ball.png' %}" alt="Billiard Ball">
                         <h3>Billiard Ball Keychain</h3>
                         <div class="rating">⭐ 4.9</div>
                         <p class="price">Rp25.000</p>
@@ -358,7 +361,8 @@
                 </div>
                 <div class="product-card">
                     <a href="#">
-                        <img src="{% static 'img/guitar 1.png' %}" alt="Guitar">
+                        <!-- ✅ FIXED: guitar 1.png → guitar-1.png -->
+                        <img src="{% static 'img/guitar-1.png' %}" alt="Guitar">
                         <h3>Guitar Shaped Keychain</h3>
                         <div class="rating">⭐ 4.5</div>
                         <p class="price">Rp60.000</p>
@@ -366,7 +370,8 @@
                 </div>
                 <div class="product-card">
                     <a href="#">
-                        <img src="{% static 'img/dice keychain.png' %}" alt="Dice">
+                        <!-- ✅ FIXED: dice keychain.png → dice-keychain.png -->
+                        <img src="{% static 'img/dice-keychain.png' %}" alt="Dice">
                         <h3>Dice Keychain</h3>
                         <div class="rating">⭐ 4.5</div>
                         <p class="price">Rp25.000</p>
@@ -374,7 +379,8 @@
                 </div>
                 <div class="product-card">
                     <a href="#">
-                        <img src="{% static 'img/hotwheels 1.png' %}" alt="Hot Wheels">
+                        <!-- ✅ FIXED: hotwheels 1.png → hotwheels-1.png -->
+                        <img src="{% static 'img/hotwheels-1.png' %}" alt="Hot Wheels">
                         <h3>Hot Wheels Car Keychain</h3>
                         <div class="rating">⭐ 4.4</div>
                         <p class="price">Rp35.000</p>
@@ -404,7 +410,8 @@
             {% else %}
                 <div class="product-card">
                     <a href="#">
-                        <img src="{% static 'img/hotwheels 1.png' %}" alt="Hot Wheels">
+                        <!-- ✅ FIXED: hotwheels 1.png → hotwheels-1.png -->
+                        <img src="{% static 'img/hotwheels-1.png' %}" alt="Hot Wheels">
                         <h3>Red Hot Wheels Car Keychain</h3>
                         <div class="rating">⭐ 5.0</div>
                         <p class="price">Rp40.000</p>
@@ -412,7 +419,8 @@
                 </div>
                 <div class="product-card">
                     <a href="#">
-                        <img src="{% static 'img/guitar 2.png' %}" alt="Guitar">
+                        <!-- ✅ FIXED: guitar 2.png → guitar-2.png -->
+                        <img src="{% static 'img/guitar-2.png' %}" alt="Guitar">
                         <h3>Guitar Shaped Keychain</h3>
                         <div class="rating">⭐ 4.9</div>
                         <p class="price">Rp30.000</p>
@@ -420,7 +428,8 @@
                 </div>
                 <div class="product-card">
                     <a href="#">
-                        <img src="{% static 'img/hotwheels 2.png' %}" alt="Hot Wheels">
+                        <!-- ✅ FIXED: hotwheels 2.png → hotwheels-2.png -->
+                        <img src="{% static 'img/hotwheels-2.png' %}" alt="Hot Wheels">
                         <h3>Hot Wheels Car Keychain</h3>
                         <div class="rating">⭐ 4.8</div>
                         <p class="price">Rp35.000</p>
@@ -428,7 +437,8 @@
                 </div>
                 <div class="product-card">
                     <a href="#">
-                        <img src="{% static 'img/dice keychain.png' %}" alt="Dice">
+                        <!-- ✅ FIXED: dice keychain.png → dice-keychain.png -->
+                        <img src="{% static 'img/dice-keychain.png' %}" alt="Dice">
                         <h3>Dice Keychain</h3>
                         <div class="rating">⭐ 4.6</div>
                         <p class="price">Rp20.000</p>
@@ -449,21 +459,21 @@
                     <div class="stars">
                         <span class="star-icon">&#9733;&#9733;&#9733;&#9733;&#9733;</span> 
                     </div>
-                    <h3 class="customer-name">Sarah M. <span class="verified-badge">✔</span></h3>
+                    <h3 class="customer-name">Sarah M. <span class="verified-badge">✓</span></h3>
                     <p class="review-text">"I love the keychain's unique design! It's lightweight but feels very durable. The details are so cute and stylish. I've even received compliments from my friends!"</p>
                 </div>
                 <div class="review-card">
                     <div class="stars">
                         <span class="star-icon">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
                     </div>
-                    <h3 class="customer-name">Alex K. <span class="verified-badge">✔</span></h3>
+                    <h3 class="customer-name">Alex K. <span class="verified-badge">✓</span></h3>
                     <p class="review-text">"The packaging was neat, and the product arrived quickly. The keychain matches perfectly with my car keys. It's small, simple, and classy."</p>
                 </div>
                 <div class="review-card">
                     <div class="stars">
                         <span class="star-icon">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
                     </div>
-                    <h3 class="customer-name">James L. <span class="verified-badge">✔</span></h3>
+                    <h3 class="customer-name">James L. <span class="verified-badge">✓</span></h3>
                     <p class="review-text">"I bought two keychains — one for me and one as a gift. Both look amazing! The quality is great, and it really adds personality to my daily items."</p>
                 </div>
             </div>
@@ -542,12 +552,8 @@ Ekspresikan gaya dan identitasmu lewat desain yang punya makna..</p>
             <div class="container">
                 <p>&copy; 2000-2023, All Rights Reserved</p>
                 <div class="payment-methods">
-                    {# Ganti dengan ikon pembayaran Anda #}
-                    <img src="{% static 'img/visa_icon.png' %}" alt="Visa" width="40" height="20">
-                    <img src="{% static 'img/mastercard_icon.png' %}" alt="Mastercard" width="40" height="20">
-                    <img src="{% static 'img/paypal_icon.png' %}" alt="PayPal" width="40" height="20">
-                    <img src="{% static 'img/applepay_icon.png' %}" alt="Apple Pay" width="40" height="20">
-                    <img src="{% static 'img/googlepay_icon.png' %}" alt="Google Pay" width="40" height="20">
+                    {# Placeholder untuk ikon pembayaran - ganti dengan file yang sesuai #}
+                    <span style="color: #999;">💳 Payment methods</span>
                 </div>
             </div>
         </div>
