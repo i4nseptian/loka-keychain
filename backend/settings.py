@@ -1,9 +1,11 @@
 """
 Django settings for backend project.
+Optimized for Render.com deployment
 """
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # ----------------------------
 # 🔧 PATH & BASIC CONFIG
@@ -12,10 +14,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-uas^c%rmqdl^vi46vssw7%(z^vnel2af(@rh-5sxs0-2b17$(y')
 
-# ✅ Production-ready: False di production
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+# ✅ Production: DEBUG akan False di Render
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# ✅ Railway akan auto-inject domain
+# ✅ Allow all hosts (atau spesifik domain Render nanti)
 ALLOWED_HOSTS = ['*']
 
 # ----------------------------
@@ -39,8 +41,8 @@ INSTALLED_APPS = [
 # ----------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ Railway static files
-    'corsheaders.middleware.CorsMiddleware',  # ✅ CORS harus di atas
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ Render static files
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -75,20 +77,14 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # ----------------------------
 # 🗄 DATABASE
 # ----------------------------
-# ✅ PostgreSQL untuk Railway Production
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('PGDATABASE'),
-        'USER': os.environ.get('PGUSER'),
-        'PASSWORD': os.environ.get('PGPASSWORD'),
-        'HOST': os.environ.get('PGHOST'),
-        'PORT': os.environ.get('PGPORT', '5432'),
+# ✅ Render.com: Gunakan DATABASE_URL environment variable
+if os.environ.get('DATABASE_URL'):
+    # Production - PostgreSQL dari Render
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
     }
-}
-
-# ✅ Fallback ke SQLite untuk development lokal
-if DEBUG:
+else:
+    # Development - SQLite lokal
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -123,12 +119,11 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-# ✅ Railway: collectstatic output
+# ✅ Render: collectstatic output
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # ✅ WhiteNoise: compress & cache static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 # ----------------------------
 # 🖼️ MEDIA FILES (Upload gambar produk)
 # ----------------------------
@@ -138,7 +133,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ----------------------------
-# 🌐 CORS - Railway production
+# 🌐 CORS - Render production
 # ----------------------------
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -147,8 +142,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:9000",
 ]
 
-# ✅ Allow Railway domain (auto-added saat deploy)
-CORS_ALLOW_ALL_ORIGINS = False  # Set True kalau mau allow semua origin
+# ✅ Set True untuk allow semua origin (atau tambahkan domain spesifik nanti)
+CORS_ALLOW_ALL_ORIGINS = True  
 
 # ----------------------------
 # 🧠 UNFOLD ADMIN CONFIG
@@ -198,19 +193,19 @@ MIDTRANS_CLIENT_KEY = os.environ.get('MIDTRANS_CLIENT_KEY', "Mid-client-B3310bjc
 MIDTRANS_MERCHANT_ID = os.environ.get('MIDTRANS_MERCHANT_ID', "G655962966")
 
 # ============================================
-# 🔒 CSRF SETTINGS - Railway Production
+# 🔒 CSRF SETTINGS - Render Production
 # ============================================
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
 
-# ✅ Tambahkan Railway domain nanti setelah deploy
+# ✅ Tambahkan domain Render setelah deploy
 CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:9000',
     'http://localhost:9000',
     'http://127.0.0.1:8000',
     'http://localhost:8000',
-    # ⚠️ PENTING: Setelah deploy, tambahkan domain Railway:
-    # 'https://loka-keychain-production.up.railway.app'
+    # ⚠️ PENTING: Setelah deploy, tambahkan:
+    # 'https://loka-keychain.onrender.com'
 ]
 
 # Session settings
@@ -219,7 +214,7 @@ SESSION_SAVE_EVERY_REQUEST = False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 # ============================================
-# 🚀 RAILWAY PRODUCTION SETTINGS
+# 🚀 RENDER PRODUCTION SETTINGS
 # ============================================
 # Security settings untuk production
 if not DEBUG:
@@ -227,7 +222,7 @@ if not DEBUG:
     X_FRAME_OPTIONS = 'DENY'
     SECURE_CONTENT_TYPE_NOSNIFF = True
     
-    # ⚠️ Uncomment setelah deploy Railway berhasil:
+    # ⚠️ Uncomment setelah deploy Render berhasil:
     # SECURE_SSL_REDIRECT = True
     # SESSION_COOKIE_SECURE = True
     # CSRF_COOKIE_SECURE = True
