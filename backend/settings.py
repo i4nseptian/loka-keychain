@@ -1,6 +1,6 @@
 """
 Django settings for backend project.
-Optimized for Vercel deployment - FIXED VERSION
+Optimized for Vercel deployment - FINAL FIXED VERSION
 """
 
 from pathlib import Path
@@ -80,18 +80,21 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 # ----------------------------
-# 🗄 DATABASE
+# 🗄 DATABASE - FIXED VERSION
 # ----------------------------
-if os.environ.get('DATABASE_URL'):
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    # ✅ Production: Gunakan PostgreSQL dari Neon
     DATABASES = {
-        'default': dj_database_url.parse(
-            os.environ.get('DATABASE_URL'),
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
         )
     }
 else:
-    # Development only - SQLite lokal
+    # ✅ Development: Gunakan SQLite lokal
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -128,8 +131,8 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# ✅ Gunakan cara lama yang lebih stabil untuk Vercel
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+# ✅ WhiteNoise untuk serving static files di production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ----------------------------
 # 🖼️ MEDIA FILES (Upload gambar produk)
