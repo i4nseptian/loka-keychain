@@ -143,7 +143,11 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # ✅ WhiteNoise untuk serving static files di production
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Vercel-friendly: tanpa manifest untuk menghindari missing manifest error
+if DEBUG:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+else:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # ----------------------------
 # 🖼️ MEDIA FILES (Upload gambar produk)
