@@ -23,6 +23,7 @@ ALLOWED_HOSTS = [
     '.now.sh',
     'localhost',
     '127.0.0.1',
+    'loka-keychain-aes0qf8vr-achmad-septian-mulias-projects.vercel.app',
 ]
 
 # ----------------------------
@@ -46,7 +47,7 @@ INSTALLED_APPS = [
 # ----------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ HARUS setelah SecurityMiddleware
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -132,7 +133,7 @@ USE_I18N = True
 USE_TZ = True
 
 # ----------------------------
-# 📦 STATIC FILES (CSS, JS, Images)
+# 📦 STATIC FILES (CSS, JS, Images) - VERCEL OPTIMIZED
 # ----------------------------
 STATIC_URL = "/static/"
 
@@ -142,16 +143,13 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# ✅ WhiteNoise untuk serving static files
-if DEBUG:
-    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-else:
-    # Vercel: Gunakan WhiteNoise tanpa compression untuk menghindari masalah
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-    
-# WhiteNoise configuration untuk Vercel
+# ✅ CRITICAL: Disable ManifestStaticFilesStorage untuk Vercel
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+# WhiteNoise configuration
 WHITENOISE_USE_FINDERS = True
-WHITENOISE_AUTOREFRESH = True if DEBUG else False
+WHITENOISE_AUTOREFRESH = True
+WHITENOISE_INDEX_FILE = True
 
 # ----------------------------
 # 🖼️ MEDIA FILES (Upload gambar produk)
