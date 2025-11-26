@@ -1,6 +1,6 @@
 """
 Django settings for backend project.
-Optimized for Vercel deployment - FINAL FIXED VERSION
+FINAL VERSION - Optimized for Vercel Deployment
 """
 
 from pathlib import Path
@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-uas^c%rmqdl^vi46vssw7%(z^vnel2af(@rh-5sxs0-2b17$(y')
 
 # ✅ Production: DEBUG akan False di Vercel
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # ✅ Allow Vercel domains
 ALLOWED_HOSTS = [
@@ -23,7 +23,6 @@ ALLOWED_HOSTS = [
     '.now.sh',
     'localhost',
     '127.0.0.1',
-    'loka-keychain-aes0qf8vr-achmad-septian-mulias-projects.vercel.app',
 ]
 
 # ----------------------------
@@ -47,7 +46,7 @@ INSTALLED_APPS = [
 # ----------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ HARUS setelah SecurityMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -81,32 +80,20 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 # ----------------------------
-# 🗄 DATABASE - BULLETPROOF VERSION
+# 🗄 DATABASE - VERCEL PRODUCTION
 # ----------------------------
-# ✅ Ini akan fallback ke SQLite jika DATABASE_URL kosong/error
-try:
-    DATABASE_URL = os.environ.get('DATABASE_URL', '')
-    
-    if DATABASE_URL and DATABASE_URL.strip():
-        # Production: Gunakan PostgreSQL dari Neon
-        DATABASES = {
-            'default': dj_database_url.config(
-                default=DATABASE_URL,
-                conn_max_age=600,
-                conn_health_checks=True,
-            )
-        }
-    else:
-        # Development: Gunakan SQLite lokal
-        DATABASES = {
-            "default": {
-                "ENGINE": "django.db.backends.sqlite3",
-                "NAME": BASE_DIR / "db.sqlite3",
-            }
-        }
-except Exception as e:
-    # Fallback ke SQLite jika ada error apapun
-    print(f"Database config error: {e}, using SQLite")
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:
+    # Development fallback
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -133,41 +120,32 @@ USE_I18N = True
 USE_TZ = True
 
 # ----------------------------
-# 📦 STATIC FILES (CSS, JS, Images) - VERCEL OPTIMIZED
+# 📦 STATIC FILES - VERCEL OPTIMIZED
 # ----------------------------
 STATIC_URL = "/static/"
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
-# ✅ CRITICAL: Disable ManifestStaticFilesStorage untuk Vercel
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # WhiteNoise configuration
-WHITENOISE_USE_FINDERS = True
-WHITENOISE_AUTOREFRESH = True
-WHITENOISE_INDEX_FILE = True
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ----------------------------
-# 🖼️ MEDIA FILES (Upload gambar produk)
+# 🖼️ MEDIA FILES
 # ----------------------------
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ----------------------------
-# 🌐 CORS - Vercel production
+# 🌐 CORS
 # ----------------------------
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 # ----------------------------
 # 🧠 UNFOLD ADMIN CONFIG
@@ -211,13 +189,13 @@ UNFOLD = {
 # ============================================
 # 💳 MIDTRANS PAYMENT PRODUCTION
 # ============================================
-MIDTRANS_IS_PRODUCTION = True
+MIDTRANS_IS_PRODUCTION = not DEBUG
 MIDTRANS_SERVER_KEY = os.environ.get('MIDTRANS_SERVER_KEY', "Mid-server-es3mcyeUd2ERi-dszey7_bnX")
 MIDTRANS_CLIENT_KEY = os.environ.get('MIDTRANS_CLIENT_KEY', "Mid-client-B3310bjceOS1GUiv")
 MIDTRANS_MERCHANT_ID = os.environ.get('MIDTRANS_MERCHANT_ID', "G655962966")
 
 # ============================================
-# 🔒 CSRF SETTINGS - Vercel Production
+# 🔒 CSRF & SECURITY - Vercel Production
 # ============================================
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
@@ -233,9 +211,7 @@ SESSION_COOKIE_AGE = 1209600
 SESSION_SAVE_EVERY_REQUEST = False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
-# ============================================
-# 🚀 VERCEL PRODUCTION SETTINGS
-# ============================================
+# Production security
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = 'DENY'
