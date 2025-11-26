@@ -7,20 +7,27 @@
       "config": {
         "maxLambdaSize": "15mb"
       }
+    },
+    {
+      "src": "build.sh",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "staticfiles"
+      }
     }
   ],
   "routes": [
     {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/media/(.*)",
+      "dest": "/media/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "backend/wsgi.py"
     }
-  ],
-  "env": {
-    "DJANGO_SETTINGS_MODULE": "backend.settings"
-  },
-  "functions": {
-    "backend/wsgi.py": {
-      "includeFiles": "staticfiles/**"
-    }
-  }
+  ]
 }
