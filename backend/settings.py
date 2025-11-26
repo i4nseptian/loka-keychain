@@ -128,15 +128,8 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# ✅ Django 4.2+ STORAGES (ganti STATICFILES_STORAGE yang deprecated)
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+# ✅ Gunakan cara lama yang lebih stabil untuk Vercel
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # ----------------------------
 # 🖼️ MEDIA FILES (Upload gambar produk)
