@@ -1,6 +1,6 @@
 """
 Django settings for backend project.
-Optimized for Render.com deployment
+Optimized for Vercel deployment - FIXED VERSION
 """
 
 from pathlib import Path
@@ -14,17 +14,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-uas^c%rmqdl^vi46vssw7%(z^vnel2af(@rh-5sxs0-2b17$(y')
 
-# ✅ Production: DEBUG akan False di Render
+# ✅ Production: DEBUG akan False di Vercel
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# ✅ Allow all hosts (atau spesifik domain Render nanti)
-ALLOWED_HOSTS = ['*']
+# ✅ Allow Vercel domains
+ALLOWED_HOSTS = [
+    '.vercel.app',
+    '.now.sh',
+    'localhost',
+    '127.0.0.1',
+]
 
 # ----------------------------
 # ⚙️ APPS
 # ----------------------------
 INSTALLED_APPS = [
-    "unfold",  # 🧩 UI Admin Modern
+    "unfold",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -41,7 +46,7 @@ INSTALLED_APPS = [
 # ----------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ Render static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,7 +64,7 @@ ROOT_URLCONF = "backend.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],  
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -77,14 +82,16 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # ----------------------------
 # 🗄 DATABASE
 # ----------------------------
-# ✅ Render.com: Gunakan DATABASE_URL environment variable
 if os.environ.get('DATABASE_URL'):
-    # Production - PostgreSQL dari Render
     DATABASES = {
-        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+        'default': dj_database_url.parse(
+            os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
 else:
-    # Development - SQLite lokal
+    # Development only - SQLite lokal
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -119,11 +126,18 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-# ✅ Render: collectstatic output
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# ✅ WhiteNoise: compress & cache static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+# ✅ Django 4.2+ STORAGES (ganti STATICFILES_STORAGE yang deprecated)
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 # ----------------------------
 # 🖼️ MEDIA FILES (Upload gambar produk)
 # ----------------------------
@@ -133,16 +147,14 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ----------------------------
-# 🌐 CORS - Render production
+# 🌐 CORS - Vercel production
 # ----------------------------
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://your-frontend-domain.com",  # ✅ URL frontend Anda
 ]
 
-# ✅ Set True untuk allow semua origin (atau tambahkan domain spesifik nanti)
-CORS_ALLOW_ALL_ORIGINS = True  
+CORS_ALLOW_ALL_ORIGINS = True
 
 # ----------------------------
 # 🧠 UNFOLD ADMIN CONFIG
@@ -192,35 +204,29 @@ MIDTRANS_CLIENT_KEY = os.environ.get('MIDTRANS_CLIENT_KEY', "Mid-client-B3310bjc
 MIDTRANS_MERCHANT_ID = os.environ.get('MIDTRANS_MERCHANT_ID', "G655962966")
 
 # ============================================
-# 🔒 CSRF SETTINGS - Render Production
+# 🔒 CSRF SETTINGS - Vercel Production
 # ============================================
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
 
-# ✅ Tambahkan domain Render setelah deploy
 CSRF_TRUSTED_ORIGINS = [
-    'http://127.0.0.1:9000',
-    'http://localhost:9000',
     'http://127.0.0.1:8000',
     'http://localhost:8000',
-    'https://loka-keychain.onrender.com',  # ✅ Tambahkan ini
+    'https://*.vercel.app',
 ]
 
 # Session settings
-SESSION_COOKIE_AGE = 1209600  # 2 weeks
+SESSION_COOKIE_AGE = 1209600
 SESSION_SAVE_EVERY_REQUEST = False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 # ============================================
-# 🚀 RENDER PRODUCTION SETTINGS
+# 🚀 VERCEL PRODUCTION SETTINGS
 # ============================================
-# Security settings untuk production
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = 'DENY'
     SECURE_CONTENT_TYPE_NOSNIFF = True
-    
-    # ⚠️ Uncomment setelah deploy Render berhasil:
-    # SECURE_SSL_REDIRECT = True
-    # SESSION_COOKIE_SECURE = True
-    # CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
