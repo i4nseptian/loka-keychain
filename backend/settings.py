@@ -80,21 +80,32 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 # ----------------------------
-# 🗄 DATABASE - FIXED VERSION
+# 🗄 DATABASE - BULLETPROOF VERSION
 # ----------------------------
-DATABASE_URL = os.environ.get('DATABASE_URL')
-
-if DATABASE_URL:
-    # ✅ Production: Gunakan PostgreSQL dari Neon
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
-else:
-    # ✅ Development: Gunakan SQLite lokal
+# ✅ Ini akan fallback ke SQLite jika DATABASE_URL kosong/error
+try:
+    DATABASE_URL = os.environ.get('DATABASE_URL', '')
+    
+    if DATABASE_URL and DATABASE_URL.strip():
+        # Production: Gunakan PostgreSQL dari Neon
+        DATABASES = {
+            'default': dj_database_url.config(
+                default=DATABASE_URL,
+                conn_max_age=600,
+                conn_health_checks=True,
+            )
+        }
+    else:
+        # Development: Gunakan SQLite lokal
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": BASE_DIR / "db.sqlite3",
+            }
+        }
+except Exception as e:
+    # Fallback ke SQLite jika ada error apapun
+    print(f"Database config error: {e}, using SQLite")
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
