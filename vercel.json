@@ -11,7 +11,5 @@
       "src": "/(.*)",
       "dest": "api/index.py"
     }
-  ],
-  "//": "force redeploy",
-  "buildCommand": "python manage.py migrate"
+  ]
 }
