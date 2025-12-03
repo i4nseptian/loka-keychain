@@ -1,6 +1,6 @@
 """
 Django settings for backend project.
-FINAL VERSION - Optimized for Vercel Deployment
+FINAL VERSION - Optimized for PythonAnywhere Deployment
 """
 
 from pathlib import Path
@@ -13,13 +13,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-uas^c%rmqdl^vi46vssw7%(z^vnel2af(@rh-5sxs0-2b17$(y')
 
-# ✅ Production: DEBUG akan False di Vercel
+# ✅ Production: DEBUG akan False di PythonAnywhere
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# ✅ Allow Vercel domains
+# ✅ Allow PythonAnywhere domains - GANTI 'yourusername' dengan username Anda
 ALLOWED_HOSTS = [
-    '.vercel.app',
-    '.now.sh',
+    'yourusername.pythonanywhere.com',  # ⚠️ GANTI dengan username PythonAnywhere Anda
     'localhost',
     '127.0.0.1',
 ]
@@ -79,15 +78,29 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 # ----------------------------
-# 🗄 DATABASE (SQLite moved to /api)
+# 🗄 DATABASE - PythonAnywhere (SQLite atau MySQL)
 # ----------------------------
+# Opsi 1: SQLite (simple, gratis)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "api", "db.sqlite3"),
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
+# Opsi 2: MySQL (gratis di PythonAnywhere, uncomment jika ingin pakai)
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'yourusername$lokakeychain',  # ⚠️ GANTI yourusername
+#         'USER': 'yourusername',                # ⚠️ GANTI yourusername
+#         'PASSWORD': os.environ.get('DB_PASSWORD', 'your_db_password'),
+#         'HOST': 'yourusername.mysql.pythonanywhere-services.com',  # ⚠️ GANTI yourusername
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         },
+#     }
+# }
 
 # ----------------------------
 # 🔐 PASSWORD VALIDATION
@@ -108,13 +121,13 @@ USE_I18N = True
 USE_TZ = True
 
 # ----------------------------
-# 📦 STATIC FILES - VERCEL OPTIMIZED
+# 📦 STATIC FILES - PYTHONANYWHERE OPTIMIZED
 # ----------------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# WhiteNoise configuration - Disable strict manifest for Vercel
+# WhiteNoise configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 WHITENOISE_MANIFEST_STRICT = False
 
@@ -127,11 +140,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ----------------------------
-# 🌐 CORS
+# 🌐 CORS - GANTI dengan domain frontend Anda
 # ----------------------------
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://yourusername.pythonanywhere.com",  # ⚠️ GANTI jika perlu
 ]
 
 CORS_ALLOW_ALL_ORIGINS = DEBUG
@@ -184,7 +198,7 @@ MIDTRANS_CLIENT_KEY = os.environ.get('MIDTRANS_CLIENT_KEY', "Mid-client-B3310bjc
 MIDTRANS_MERCHANT_ID = os.environ.get('MIDTRANS_MERCHANT_ID', "G655962966")
 
 # ============================================
-# 🔒 CSRF & SECURITY - Vercel Production
+# 🔒 CSRF & SECURITY - PythonAnywhere Production
 # ============================================
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
@@ -192,7 +206,7 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000',
     'http://localhost:8000',
-    'https://*.vercel.app',
+    'https://yourusername.pythonanywhere.com',  # ⚠️ GANTI dengan username Anda
 ]
 
 # Session settings
@@ -200,11 +214,12 @@ SESSION_COOKIE_AGE = 1209600
 SESSION_SAVE_EVERY_REQUEST = False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
-# Production security
+# Production security (aktif saat DEBUG=False)
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = 'DENY'
     SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_SSL_REDIRECT = True
+    # ⚠️ PythonAnywhere sudah handle HTTPS, jadi disable redirect
+    SECURE_SSL_REDIRECT = False  # PythonAnywhere handles this
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
